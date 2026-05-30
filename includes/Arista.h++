@@ -1,14 +1,13 @@
 #pragma once
-#include "Vertice.h++"
 
+struct Vertice;
 
 struct Arista{
-    short peso;
+    short peso = 0;
     Vertice *origen;
-
     Vertice *destino;
 
     Arista *siguiente;
     Arista *anterior;
 };
-typedef Arista *ListaAristas;
+typedef Arista* ListaAristas;

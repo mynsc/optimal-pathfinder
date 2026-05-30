@@ -1,10 +1,14 @@
 #pragma once
-#include "Arista.h++"
 
 #include <string>
+
+
+struct Arista;
 struct Vertice{
     int id;
     std::string nombre;
-    ListaAristas AristasAdyacentes;
+
+    Arista* AristasAdyacentes;
 };
 
+typedef Vertice* ListaVertices;
