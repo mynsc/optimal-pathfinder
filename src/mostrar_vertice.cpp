@@ -1,6 +1,6 @@
-#include "../include/mostar_vertice.hpp"
-#include "../include/vertice.hpp"
-#include "../include/arista.hpp"
+#include "mostar_vertice.hpp"
+#include "vertice.hpp"
+#include "arista.hpp"
 #include <iostream>
 
 void mostrarVertices(ListaVertices vertice)

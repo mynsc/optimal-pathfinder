@@ -1,2 +1,2 @@
-#include "../includes/grafo.hpp"
+#include "grafo.hpp"
 #include <iostream>

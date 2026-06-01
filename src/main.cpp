@@ -1,6 +1,6 @@
-#include "include/arista.hpp"
-#include "include/vertice.hpp"
-#include "include/mostar_vertice.hpp"
+#include "arista.hpp"
+#include "vertice.hpp"
+#include "mostar_vertice.hpp"
 #include <iostream>
 
 int main()
