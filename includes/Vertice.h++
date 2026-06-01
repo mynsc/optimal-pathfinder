@@ -5,10 +5,12 @@
 
 struct Arista;
 struct Vertice{
-    int id;
     std::string nombre;
 
-    Arista* AristasAdyacentes;
+    Vertice *siguiente = NULL;
+    Vertice *anterior = NULL;
+
+    Arista* AristaAdyacente = NULL;
 };
 
 typedef Vertice* ListaVertices;

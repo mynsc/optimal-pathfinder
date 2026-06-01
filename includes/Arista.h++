@@ -4,10 +4,10 @@ struct Vertice;
 
 struct Arista{
     short peso = 0;
-    Vertice *origen;
-    Vertice *destino;
+    Vertice *origen = NULL;
+    Vertice *destino = NULL;
 
-    Arista *siguiente;
-    Arista *anterior;
+    Arista *siguiente = NULL;
+    Arista *anterior = NULL;
 };
 typedef Arista* ListaAristas;
