@@ -1,8 +1,8 @@
-#include "../includes/MostrarVertice.h++"
-#include "../includes/Vertice.h++"
+#include "../includes/MostrarVertice.hpp"
+#include "../includes/Vertice.hpp"
 
 #include <iostream>
-#include "../includes/Arista.h++"
+#include "../includes/Arista.hpp"
 
 void MostrarVertice(ListaVertices verticeOrigen)
 {
