@@ -1,6 +1,4 @@
 #pragma once
-#include "Vertice.h++"
-
-
+#include "vertice.hpp"
 
 void mostrarVertices(ListaVertices vertice);

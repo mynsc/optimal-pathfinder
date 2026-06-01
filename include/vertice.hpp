@@ -2,8 +2,8 @@
 
 #include <string>
 
-
 struct Arista;
+
 struct Vertice{
     int id;
     std::string nombre;
