@@ -1,7 +1,8 @@
+#include "include/arista.hpp"
+#include "include/vertice.hpp"
+#include "include/mostar_vertice.hpp"
 #include <iostream>
-#include "../includes/Arista.h++"
-#include "../includes/Vertice.h++"
-#include "../includes/MostarVertice.h++"
+
 int main()
 {
     // VERTICES
