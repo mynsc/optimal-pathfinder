@@ -41,16 +41,17 @@ int main()
     {
         //system("cls");
 
-        std::cout << "\tINGRESE VERTICE A VER SUS VECINOS:\t\n\n";
-        std::cout << "presionar 0 para salir\n " << std::endl;
+        std::cout << "\n\tEscoja un vertice para visualizar sus vecinos\t\n\n";
         int i = 1;
         do
         {
-            std::cout << "OPCION " << i << ": " << copia->nombre << std::endl;
+            std::cout << i << ". " << copia->nombre << std::endl;
             copia = copia->siguiente;
             i++;
 
         } while (copia != listaVertices);
+        std::cout << "0. Salir\n";
+
         std::cout << "\nIngrese opcion >> ";
         std::cin >> opcion;
 
