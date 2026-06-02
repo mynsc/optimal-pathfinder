@@ -12,7 +12,7 @@ void mostrarVertices(ListaVertices verticeOrigen)
     while (aux != nullptr)
     {
         std::cout << verticeOrigen->nombre;
-        std::cout << "  ---" << aux->peso << "---> " << aux->destino->nombre << std::endl;
+        std::cout << "  ---(" << aux->peso << ")---> " << aux->destino->nombre << std::endl;
         
         aux = aux->siguiente;
     }
