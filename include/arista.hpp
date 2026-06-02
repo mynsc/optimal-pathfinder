@@ -3,7 +3,7 @@
 struct Vertice;
 
 struct Arista{
-    short peso = 0;
+    short peso;
     Vertice *origen;
     Vertice *destino;
 
