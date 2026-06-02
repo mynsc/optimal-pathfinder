@@ -3,11 +3,13 @@
 struct Vertice;
 
 struct Arista{
-    short peso;
-    Vertice *origen;
-    Vertice *destino;
+    short peso = 0;
+    
+    Vertice *origen = nullptr;
+    Vertice *destino = nullptr;
 
-    Arista *siguiente;
-    Arista *anterior;
+    Arista *siguiente = nullptr;
+    Arista *anterior = nullptr;
 };
+
 typedef Arista* ListaAristas;
