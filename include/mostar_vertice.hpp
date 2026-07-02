@@ -1,4 +1,4 @@
 #pragma once
 #include "vertice.hpp"
 
-void mostrarVertices(ListaVertices vertice);
+void mostrarVertices(vertice vertice);

@@ -1,47 +1,47 @@
 #include "grafo.hpp"
 #include <iostream>
 
-ListaVertices crearVertice(const std::string &nombre)
+vertice crearVertice(const std::string &nombre)
 {
-    ListaVertices v = new Vertice();
+    vertice v = new Vertice();
 
     v->nombre = nombre;
     v->siguiente = nullptr;
     v->anterior = nullptr;
-    v->AristaAdyacente = nullptr;
+    v->aristaAdyacente = nullptr;
 
     return v;
 }
 
-void agregarVertice(ListaVertices &head, ListaVertices v)
+void agregarVertice(vertice &cabeza, vertice v)
 {
-    if (!head) { head = v; return; }
+    if (!cabeza) { cabeza = v; return; }
 
-    ListaVertices cur = head;
+    vertice actual = cabeza;
 
-    while (cur->siguiente) cur = cur->siguiente;
+    while (actual->siguiente) actual = actual->siguiente;
 
-    cur->siguiente = v;
+    actual->siguiente = v;
     v->siguiente = nullptr;
-    v->anterior = cur;
+    v->anterior = actual;
 }
 
-ListaVertices buscarVertice(ListaVertices head, const std::string &nombre)
+vertice buscarVertice(vertice cabeza, const std::string &nombre)
 {
-    ListaVertices cur = head;
+    vertice actual = cabeza;
 
-    while (cur)
+    while (actual)
     {
-        if (cur->nombre == nombre) return cur;
-        cur = cur->siguiente;
+        if (actual->nombre == nombre) return actual;
+        actual = actual->siguiente;
     }
 
     return nullptr;
 }
 
-ListaAristas crearArista(ListaVertices origen, ListaVertices destino, short peso)
+arista crearArista(vertice origen, vertice destino, short peso)
 {
-    ListaAristas a = new Arista();
+    arista a = new Arista();
 
     a->peso = peso;
     a->origen = origen;
@@ -52,47 +52,47 @@ ListaAristas crearArista(ListaVertices origen, ListaVertices destino, short peso
     return a;
 }
 
-void agregarArista(ListaVertices origen, ListaAristas arista)
+void agregarArista(vertice origen, arista arista)
 {
     if (!origen) return;
 
-    arista->siguiente = origen->AristaAdyacente;
+    arista->siguiente = origen->aristaAdyacente;
 
-    if (origen->AristaAdyacente)
-        origen->AristaAdyacente->anterior = arista;
-    origen->AristaAdyacente = arista;
+    if (origen->aristaAdyacente)
+        origen->aristaAdyacente->anterior = arista;
+    origen->aristaAdyacente = arista;
 }
 
-void enlaceBidireccional(ListaVertices a, ListaVertices b, short peso)
+void enlaceBidireccional(vertice a, vertice b, short peso)
 {
     if (!a || !b) return;
 
-    ListaAristas ab = crearArista(a, b, peso);
-    ListaAristas ba = crearArista(b, a, peso);
+    arista ab = crearArista(a, b, peso);
+    arista ba = crearArista(b, a, peso);
 
     agregarArista(a, ab);
     agregarArista(b, ba);
 }
 
-void liberarGrafo(ListaVertices &head)
+void liberarGrafo(vertice &cabeza)
 {
-    ListaVertices curV = head;
+    vertice actualV = cabeza;
 
-    while (curV) 
+    while (actualV) 
     {
-        ListaAristas curA = curV->AristaAdyacente;
+        arista actualA = actualV->aristaAdyacente;
 
-        while (curA)
+        while (actualA)
         {
-            ListaAristas nextA = curA->siguiente;
-            delete curA;
-            curA = nextA;
+            arista siguienteA = actualA->siguiente;
+            delete actualA;
+            actualA = siguienteA;
         }
 
-        ListaVertices nextV = curV->siguiente;
-        delete curV;
-        curV = nextV;
+        vertice siguienteV = actualV->siguiente;
+        delete actualV;
+        actualV = siguienteV;
     }
 
-    head = nullptr;
+    cabeza = nullptr;
 }

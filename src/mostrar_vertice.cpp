@@ -3,17 +3,17 @@
 #include "arista.hpp"
 #include <iostream>
 
-void mostrarVertices(ListaVertices verticeOrigen)
+void mostrarVertices(vertice origen)
 {
-    std::cout << "\nOrigen: " << verticeOrigen->nombre << std::endl;
+    std::cout << "\nOrigen: " << origen->nombre << std::endl;
 
-    ListaAristas aux = verticeOrigen->AristaAdyacente;
+    arista auxiliar = origen->aristaAdyacente;
 
-    while (aux != nullptr)
+    while (auxiliar != nullptr)
     {
-        std::cout << verticeOrigen->nombre;
-        std::cout << "  ---(" << aux->peso << ")---> " << aux->destino->nombre << std::endl;
+        std::cout << origen->nombre;
+        std::cout << "  ---(" << auxiliar->peso << ")---> " << auxiliar->destino->nombre << std::endl;
         
-        aux = aux->siguiente;
+        auxiliar = auxiliar->siguiente;
     }
 }

@@ -13,4 +13,4 @@ struct Arista
     Arista *anterior = nullptr;
 };
 
-typedef Arista* ListaAristas;
+typedef Arista *arista;

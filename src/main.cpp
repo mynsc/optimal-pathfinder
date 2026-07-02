@@ -6,12 +6,12 @@
 
 int main()
 {
-    ListaVertices listaVertices = nullptr;
-    ListaVertices v1 = crearVertice("Fac. Ing. Geologica");
-    ListaVertices v2 = crearVertice("Fac. Ing. Metalurgica");
-    ListaVertices v3 = crearVertice("Fac. Quimica e Ing. Geologica");
-    ListaVertices v4 = crearVertice("Fac. Ciencias Matematicas");
-    ListaVertices v5 = crearVertice("Fac. Ciencias Biologicas");
+    vertice listaVertices = nullptr;
+    vertice v1 = crearVertice("Fac. Ing. Geologica");
+    vertice v2 = crearVertice("Fac. Ing. Metalurgica");
+    vertice v3 = crearVertice("Fac. Quimica e Ing. Geologica");
+    vertice v4 = crearVertice("Fac. Ciencias Matematicas");
+    vertice v5 = crearVertice("Fac. Ciencias Biologicas");
 
     listaVertices = v1;
     v1->siguiente = v2;
@@ -30,7 +30,7 @@ int main()
     int opcion  = 0;
     do
     {
-        ListaVertices copia = listaVertices;
+        vertice copia = listaVertices;
         int i = 1;
         
         std::cout << "\n\tEscoja un vertice para visualizar sus vecinos\t\n\n";

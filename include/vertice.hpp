@@ -10,7 +10,7 @@ struct Vertice{
     Vertice *siguiente = nullptr;
     Vertice *anterior = nullptr;
 
-    Arista* AristaAdyacente = nullptr;
+    Arista *aristaAdyacente = nullptr;
 };
 
-typedef Vertice* ListaVertices;
+typedef Vertice *vertice;

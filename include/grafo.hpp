@@ -3,15 +3,12 @@
 #include "arista.hpp"
 #include <string>
 
-// crear y gestionar vertices
-ListaVertices crearVertice(const std::string &nombre);
-void agregarVertice(ListaVertices &head, ListaVertices v);
-ListaVertices buscarVertice(ListaVertices head, const std::string &nombre);
+vertice crearVertice(const std::string &nombre);
+void agregarVertice(vertice &cabeza, vertice v);
+vertice buscarVertice(vertice cabeza, const std::string &nombre);
 
-// crear y gestionar aristas (lista de adyacencia: cabeza ligada)
-ListaAristas crearArista(ListaVertices origen, ListaVertices destino, short peso);
-void agregarArista(ListaVertices origen, ListaAristas arista);
-void enlaceBidireccional(ListaVertices a, ListaVertices b, short peso);
+arista crearArista(vertice origen, vertice destino, short peso);
+void agregarArista(vertice origen, arista arista);
+void enlaceBidireccional(vertice a, vertice b, short peso);
 
-// liberar memoria
-void liberarGrafo(ListaVertices &head);
+void liberarGrafo(vertice &cabeza);
