@@ -2,7 +2,8 @@
 
 struct Vertice;
 
-struct Arista{
+struct Arista
+{
     short peso = 0;
     
     Vertice *origen = nullptr;

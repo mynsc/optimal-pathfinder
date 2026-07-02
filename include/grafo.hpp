@@ -3,7 +3,7 @@
 #include "arista.hpp"
 #include <string>
 
-// crear y gestionar vértices
+// crear y gestionar vertices
 ListaVertices crearVertice(const std::string &nombre);
 void agregarVertice(ListaVertices &head, ListaVertices v);
 ListaVertices buscarVertice(ListaVertices head, const std::string &nombre);

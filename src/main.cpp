@@ -30,11 +30,10 @@ int main()
     int opcion  = 0;
     do
     {
-        std::cout << "\n\tEscoja un vertice para visualizar sus vecinos\t\n\n";
-        int i = 1;
-
         ListaVertices copia = listaVertices;
+        int i = 1;
         
+        std::cout << "\n\tEscoja un vertice para visualizar sus vecinos\t\n\n";
         while (copia != nullptr)
         {
             std::cout << i << ". " << copia->nombre << std::endl;
@@ -64,11 +63,12 @@ int main()
             mostrarVertices(v5);
             break;
         case 0:
-            std::cout << "Saliendo del programa";
+            std::cout << "Saliendo del programa...\n";
             break;
         default:
             std::cout << "Opcion invalida\n";
         }
+        
     } while (opcion != 0);
 
     return 0;
