@@ -1,7 +1,6 @@
 #include "grafo.hpp"
 #include <iostream>
 
-// vertice
 ListaVertices crearVertice(const std::string &nombre) {
     ListaVertices v = new Vertice();
     v->nombre = nombre;
@@ -20,7 +19,6 @@ void agregarVertice(ListaVertices &head, ListaVertices v) {
     v->anterior = cur;
 }
 
-// buscar por nombre
 ListaVertices buscarVertice(ListaVertices head, const std::string &nombre) {
     ListaVertices cur = head;
     while (cur) {
@@ -30,7 +28,6 @@ ListaVertices buscarVertice(ListaVertices head, const std::string &nombre) {
     return nullptr;
 }
 
-// arista
 ListaAristas crearArista(ListaVertices origen, ListaVertices destino, short peso) {
     ListaAristas a = new Arista();
     a->peso = peso;
@@ -41,7 +38,6 @@ ListaAristas crearArista(ListaVertices origen, ListaVertices destino, short peso
     return a;
 }
 
-// insertar la arista al frente de la lista de adyacencia del vértice
 void agregarArista(ListaVertices origen, ListaAristas arista) {
     if (!origen) return;
     arista->siguiente = origen->AristaAdyacente;
@@ -50,7 +46,6 @@ void agregarArista(ListaVertices origen, ListaAristas arista) {
     origen->AristaAdyacente = arista;
 }
 
-// añadir aristas en ambos sentidos
 void enlaceBidireccional(ListaVertices a, ListaVertices b, short peso) {
     if (!a || !b) return;
     ListaAristas ab = crearArista(a, b, peso);
@@ -59,7 +54,6 @@ void enlaceBidireccional(ListaVertices a, ListaVertices b, short peso) {
     agregarArista(b, ba);
 }
 
-// liberar memoria de aristas y vértices
 void liberarGrafo(ListaVertices &head) {
     ListaVertices curV = head;
     while (curV) {

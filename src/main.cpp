@@ -6,16 +6,12 @@
 
 int main()
 {
-    // vertices
-
     ListaVertices listaVertices = nullptr;
     ListaVertices v1 = crearVertice("Fac. Ing. Geologica");
     ListaVertices v2 = crearVertice("Fac. Ing. Metalurgica");
     ListaVertices v3 = crearVertice("Fac. Quimica e Ing. Geologica");
     ListaVertices v4 = crearVertice("Fac. Ciencias Matematicas");
     ListaVertices v5 = crearVertice("Fac. Ciencias Biologicas");
-
-    // linealidad
 
     listaVertices = v1;
     v1->siguiente = v2;
@@ -24,16 +20,12 @@ int main()
     v4->siguiente = v5;
     v5->siguiente = nullptr;
 
-    // enlazar bidireccionalmente aristas
-
     enlaceBidireccional(v1, v2, 5);
     enlaceBidireccional(v1, v5, 3);
     enlaceBidireccional(v1, v3, 4);
     enlaceBidireccional(v2, v4, 3);
     enlaceBidireccional(v5, v4, 4);
     enlaceBidireccional(v3, v4, 1);
-
-    // ver rutas y pesos de cada vertice en especifico
 
     int opcion  = 0;
     do
@@ -43,7 +35,6 @@ int main()
 
         ListaVertices copia = listaVertices;
         
-        //system("cls");
         while (copia != nullptr)
         {
             std::cout << i << ". " << copia->nombre << std::endl;
@@ -78,7 +69,6 @@ int main()
         default:
             std::cout << "Opcion invalida\n";
         }
-        //system("pause");
     } while (opcion != 0);
 
     return 0;

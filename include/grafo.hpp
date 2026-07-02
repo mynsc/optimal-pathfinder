@@ -10,7 +10,7 @@ ListaVertices buscarVertice(ListaVertices head, const std::string &nombre);
 
 // crear y gestionar aristas (lista de adyacencia: cabeza ligada)
 ListaAristas crearArista(ListaVertices origen, ListaVertices destino, short peso);
-void agregarArista(ListaVertices origen, ListaAristas arista); // inserta al frente
+void agregarArista(ListaVertices origen, ListaAristas arista);
 void enlaceBidireccional(ListaVertices a, ListaVertices b, short peso);
 
 // liberar memoria
