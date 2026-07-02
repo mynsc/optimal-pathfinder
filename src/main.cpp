@@ -15,14 +15,14 @@ int main()
     ListaVertices v4 = crearVertice("Fac. Ciencias Matematicas");
     ListaVertices v5 = crearVertice("Fac. Ciencias Biologicas");
 
-    // circularidad
+    // linealidad
 
     listaVertices = v1;
     v1->siguiente = v2;
     v2->siguiente = v3;
     v3->siguiente = v4;
     v4->siguiente = v5;
-    v5->siguiente = listaVertices;
+    v5->siguiente = nullptr;
 
     // enlazar bidireccionalmente aristas
 
@@ -35,21 +35,21 @@ int main()
 
     // ver rutas y pesos de cada vertice en especifico
 
-    ListaVertices copia = listaVertices;
     int opcion  = 0;
     do
     {
-        //system("cls");
-
         std::cout << "\n\tEscoja un vertice para visualizar sus vecinos\t\n\n";
         int i = 1;
-        do
+
+        ListaVertices copia = listaVertices;
+        
+        //system("cls");
+        while (copia != nullptr)
         {
             std::cout << i << ". " << copia->nombre << std::endl;
             copia = copia->siguiente;
             i++;
-
-        } while (copia != listaVertices);
+        }
         std::cout << "0. Salir\n";
 
         std::cout << "\nIngrese opcion >> ";
