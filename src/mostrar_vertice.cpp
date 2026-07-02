@@ -1,4 +1,4 @@
-#include "mostar_vertice.hpp"
+#include "mostrar_vertice.hpp"
 #include "vertice.hpp"
 #include "arista.hpp"
 #include <iostream>

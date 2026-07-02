@@ -1,7 +1,7 @@
 #include "arista.hpp"
 #include "grafo.hpp"
 #include "vertice.hpp"
-#include "mostar_vertice.hpp"
+#include "mostrar_vertice.hpp"
 #include <iostream>
 
 int main()
