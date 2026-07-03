@@ -7,8 +7,8 @@ vertice crearVertice(const std::string &nombre);
 void agregarVertice(vertice &cabeza, vertice v);
 vertice buscarVertice(vertice cabeza, const std::string &nombre);
 
-arista crearArista(vertice origen, vertice destino, short peso);
+arista crearArista(vertice origen, vertice destino, short peso, bool esAccesible, short niveRestriccion);
 void agregarArista(vertice origen, arista arista);
-void enlaceBidireccional(vertice a, vertice b, short peso);
+void enlaceBidireccional(vertice a, vertice b, short peso, bool esAccesible, short nivelRestriccion);
 
 void liberarGrafo(vertice &cabeza);

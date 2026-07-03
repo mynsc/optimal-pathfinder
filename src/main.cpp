@@ -20,12 +20,12 @@ int main()
     v4->siguiente = v5;
     v5->siguiente = nullptr;
 
-    enlaceBidireccional(v1, v2, 5);
-    enlaceBidireccional(v1, v5, 3);
-    enlaceBidireccional(v1, v3, 4);
-    enlaceBidireccional(v2, v4, 3);
-    enlaceBidireccional(v5, v4, 4);
-    enlaceBidireccional(v3, v4, 1);
+    enlaceBidireccional(v1, v2, 5, true, 0);
+    enlaceBidireccional(v1, v5, 3, true, 0);
+    enlaceBidireccional(v1, v3, 4, true, 0);
+    enlaceBidireccional(v2, v4, 3, true, 0);
+    enlaceBidireccional(v5, v4, 4, true, 0);
+    enlaceBidireccional(v3, v4, 1, true, 0);
 
     int opcion  = 0;
     do

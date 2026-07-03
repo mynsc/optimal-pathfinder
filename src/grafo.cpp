@@ -39,11 +39,13 @@ vertice buscarVertice(vertice cabeza, const std::string &nombre)
     return nullptr;
 }
 
-arista crearArista(vertice origen, vertice destino, short peso)
+arista crearArista(vertice origen, vertice destino, short peso, bool esAccesible,short nivelRestriccion)
 {
     arista a = new Arista();
 
     a->peso = peso;
+    a->esAccesible = esAccesible;
+    a->nivelRestriccion = nivelRestriccion;
     a->origen = origen;
     a->destino = destino;
     a->siguiente = nullptr;
@@ -63,12 +65,12 @@ void agregarArista(vertice origen, arista arista)
     origen->aristaAdyacente = arista;
 }
 
-void enlaceBidireccional(vertice a, vertice b, short peso)
+void enlaceBidireccional(vertice a, vertice b, short peso, bool esAccesible, short nivelRestriccion)
 {
     if (!a || !b) return;
 
-    arista ab = crearArista(a, b, peso);
-    arista ba = crearArista(b, a, peso);
+    arista ab = crearArista(a, b, peso, esAccesible, nivelRestriccion);
+    arista ba = crearArista(b, a, peso, esAccesible, nivelRestriccion);
 
     agregarArista(a, ab);
     agregarArista(b, ba);
