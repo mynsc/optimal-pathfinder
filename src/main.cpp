@@ -1,19 +1,17 @@
-#include "arista.hpp"
 #include "grafo.hpp"
-#include "vertice.hpp"
-#include "mostrar_vertice.hpp"
+
 #include <iostream>
 
 int main()
 {
-    vertice listaVertices = nullptr;
+    vertice cabeza = nullptr;
     vertice v1 = crearVertice("Fac. Ing. Geologica");
     vertice v2 = crearVertice("Fac. Ing. Metalurgica");
     vertice v3 = crearVertice("Fac. Quimica e Ing. Geologica");
     vertice v4 = crearVertice("Fac. Ciencias Matematicas");
     vertice v5 = crearVertice("Fac. Ciencias Biologicas");
 
-    listaVertices = v1;
+    cabeza = v1;
     v1->siguiente = v2;
     v2->siguiente = v3;
     v3->siguiente = v4;

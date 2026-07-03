@@ -39,6 +39,21 @@ vertice buscarVertice(vertice cabeza, const std::string &nombre)
     return nullptr;
 }
 
+void mostrarVertices(vertice origen)
+{
+    std::cout << "\nOrigen: " << origen->nombre << std::endl;
+
+    arista auxiliar = origen->aristaAdyacente;
+
+    while (auxiliar != nullptr)
+    {
+        std::cout << origen->nombre;
+        std::cout << "  ---(" << auxiliar->peso << ")---> " << auxiliar->destino->nombre << std::endl;
+        
+        auxiliar = auxiliar->siguiente;
+    }
+}
+
 arista crearArista(vertice origen, vertice destino, short peso, bool esAccesible,short nivelRestriccion)
 {
     arista a = new Arista();
