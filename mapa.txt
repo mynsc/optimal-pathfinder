@@ -1,0 +1,64 @@
+# mapa.txt - Datos del grafo del campus UNMSM (Ciudad Universitaria)
+# Lienzo fijo de referencia: 389 x 487 px (tamaño real de la imagen del plano usada)
+# Origen de coordenadas: esquina superior izquierda (0,0)
+#
+# ==============================================================
+# PUNTOS CLAVE IDENTIFICADOS (8-10 puntos, coordenadas exactas en px)
+# ==============================================================
+# N°  | Punto clave                                          | X   | Y
+# ----|-------------------------------------------------------|-----|----
+#  1  | Puerta 1                                               | 347 | 30
+#  2  | Puerta 2                                               | 28  | 113
+#  3  | Puerta 3                                               | 23  | 258
+#  4  | Puerta 7                                               | 209 | 373
+#  5  | Fac. Ciencias Economicas y Fac. Ciencias Contables      | 85  | 280
+#  6  | Puerta 8                                               | 356 | 455
+#  7  | Comedor                                                | 108 | 50
+#  8  | Biblioteca Central                                     | 276 | 325
+#  9  | Estadio San Marcos                                     | 190 | 300
+# 10  | Fac. Ciencias Matematicas                               | 135 | 100
+#
+# Metodo de medicion: se tomo la imagen del plano en su tamano real (389x487 px)
+# como lienzo fijo, y se ubico cada punto ampliando la imagen por cuadrantes
+# (recorte + zoom 4x) para reducir el margen de error visual antes de anotar
+# la coordenada final sobre el lienzo original.
+# ==============================================================
+#
+# ------------------------------------------------------------
+# SECCION: VERTICES
+# Formato -> ID|Nombre|Coord_X|Coord_Y
+# ------------------------------------------------------------
+[VERTICES]
+ID|Nombre|Coord_X|Coord_Y
+1|Puerta 1|347|30
+2|Puerta 2|28|113
+3|Puerta 3|23|258
+4|Puerta 7|209|373
+5|Fac. Ciencias Economicas y Fac. Ciencias Contables|85|280
+6|Puerta 8|356|455
+7|Comedor|108|50
+8|Biblioteca Central|276|325
+9|Estadio San Marcos|190|300
+10|Fac. Ciencias Matematicas|135|100
+
+# ------------------------------------------------------------
+# SECCION: ARISTAS
+# Formato -> ID_Origen|ID_Destino|Peso|Es_Accesible|Nivel_Restriccion
+#   Peso: distancia estimada en metros
+#   Es_Accesible: true/false (ruta apta para sillas de ruedas)
+#   Nivel_Restriccion: 0 = libre, 1 = restringido (horario/vigilancia), 2 = alta restriccion
+# ------------------------------------------------------------
+[ARISTAS]
+ID_Origen|ID_Destino|Peso|Es_Accesible|Nivel_Restriccion
+1|7|90|true|0
+2|7|140|true|0
+2|3|200|true|0
+3|9|180|false|1
+7|9|220|true|0
+9|10|100|true|0
+10|8|70|true|0
+8|4|150|true|0
+4|5|90|false|2
+5|6|200|true|1
+6|8|230|true|0
+3|4|250|false|1

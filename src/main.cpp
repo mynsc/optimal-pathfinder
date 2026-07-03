@@ -1,161 +1,166 @@
+#include "arista.hpp"
+#include "grafo.hpp"
+#include "vertice.hpp"
+#include "mostrar_vertice.hpp"
+#include "dijkstra.hpp"
+
 #include <iostream>
-#include "../includes/Arista.hpp"
-#include "../includes/Vertice.hpp"
-#include "../includes/MostrarVertice.hpp"
+#include <vector>
+
+// Imprime el resultado de calcularRutaDijkstra: la secuencia de vertices
+// y el peso total acumulado de la ruta (recalculado recorriendo las aristas).
+void imprimirRuta(const std::vector<Vertice*> &ruta)
+{
+    if (ruta.empty())
+    {
+        std::cout << "\nNo existe una ruta valida entre esos vertices con las restricciones indicadas.\n";
+        return;
+    }
+
+    int pesoTotal = 0;
+
+    std::cout << "\nRuta encontrada:\n";
+    for (size_t i = 0; i < ruta.size(); i++)
+    {
+        std::cout << ruta[i]->nombre;
+
+        if (i != ruta.size() - 1)
+        {
+            // Buscar el peso de la arista entre ruta[i] y ruta[i + 1] para sumarlo
+            Arista *arista = ruta[i]->aristaAdyacente;
+            while (arista != nullptr)
+            {
+                if (arista->destino == ruta[i + 1])
+                {
+                    pesoTotal += arista->peso;
+                    break;
+                }
+                arista = arista->siguiente;
+            }
+
+            std::cout << "  ->  ";
+        }
+    }
+
+    std::cout << "\n\nPeso total de la ruta: " << pesoTotal << "\n";
+}
+
 int main()
 {
-    // VERTICES
-
-    ListaVertices listaVertices = NULL;
-
-    // ARISTAS
-
-    ListaVertices v1 = new Vertice();
-    v1->nombre = "Fac. Ing. Geologica";
-
-    ListaVertices v2 = new Vertice();
-    v2->nombre = "Fac. Ing. Metalurgica";
-
-    ListaVertices v3 = new Vertice();
-    v3->nombre = "Fac. Quimica e Ing. Geologica";
-
-    ListaVertices v4 = new Vertice();
-    v4->nombre = "Fac. Ciencias Matematicas";
-
-    ListaVertices v5 = new Vertice();
-    v5->nombre = "Fac. Ciencias Biologicas";
+    vertice listaVertices = nullptr;
+    vertice v1 = crearVertice("Fac. Ing. Geologica");
+    vertice v2 = crearVertice("Fac. Ing. Metalurgica");
+    vertice v3 = crearVertice("Fac. Quimica e Ing. Geologica");
+    vertice v4 = crearVertice("Fac. Ciencias Matematicas");
+    vertice v5 = crearVertice("Fac. Ciencias Biologicas");
 
     listaVertices = v1;
     v1->siguiente = v2;
     v2->siguiente = v3;
     v3->siguiente = v4;
     v4->siguiente = v5;
-    v5->siguiente = listaVertices; // CIRCULARIDAD DE LA LISTA DE VERTICES
+    v5->siguiente = nullptr;
 
-    // a -> ARISTA , ap -> ARISTA INVERSA  (CREACION DE ARISTAS BIDIRECCIONALES) FACILITA LA NAVEGACION EN AMBOS SENTIDOS
-    ListaAristas a1 = new Arista();
-    a1->peso = 5;
-    a1->origen = v1;
-    a1->destino = v2;
+    enlaceBidireccional(v1, v2, 5);
+    enlaceBidireccional(v1, v5, 3);
+    enlaceBidireccional(v1, v3, 4);
+    enlaceBidireccional(v2, v4, 3);
+    enlaceBidireccional(v5, v4, 4);
+    enlaceBidireccional(v3, v4, 1);
 
-    ListaAristas a1p = new Arista();
-    a1p->peso = 5;
-    a1p->origen = v2;
-    a1p->destino = v1;
+    // Arreglo auxiliar para poder seleccionar vertices por numero en el menu
+    const int TOTAL_VERTICES = 5;
+    Vertice *vertices[TOTAL_VERTICES] = { v1, v2, v3, v4, v5 };
 
-    ListaAristas a2 = new Arista();
-    a2->peso = 3;
-    a2->origen = v1;
-    a2->destino = v5;
-
-    ListaAristas a2p = new Arista();
-    a2p->peso = 3;
-    a2p->origen = v5;
-    a2p->destino = v1;
-
-    ListaAristas a3 = new Arista();
-    a3->peso = 4;
-    a3->origen = v1;
-    a3->destino = v3;
-
-    ListaAristas a3p = new Arista();
-    a3p->peso = 4;
-    a3p->origen = v3;
-    a3p->destino = v1;
-
-    ListaAristas a4 = new Arista();
-    a4->peso = 3;
-    a4->origen = v2;
-    a4->destino = v4;
-
-    ListaAristas a4p = new Arista();
-    a4p->peso = 3;
-    a4p->origen = v4;
-    a4p->destino = v2;
-
-    ListaAristas a5 = new Arista();
-    a5->peso = 4;
-    a5->origen = v5;
-    a5->destino = v4;
-
-    ListaAristas a5p = new Arista();
-    a5p->peso = 4;
-    a5p->origen = v4;
-    a5p->destino = v5;
-
-    ListaAristas a6 = new Arista();
-    a6->peso = 1;
-    a6->origen = v3;
-    a6->destino = v4;
-
-    ListaAristas a6p = new Arista();
-    a6p->peso = 1;
-    a6p->origen = v4;
-    a6p->destino = v3;
-
-    // INTEGRACION DE LAS ARISTAS A LOS VERTICES (LISTA DE ADYACENCIA)
-    v1->AristaAdyacente = a1;
-    a1->siguiente = a2;
-    a2->siguiente = a3;
-
-    v2->AristaAdyacente = a1p;
-    a1p->siguiente = a4;
-
-    v3->AristaAdyacente = a3p;
-    a3p->siguiente = a6;
-
-    v4->AristaAdyacente = a4p;
-    a4p->siguiente = a5p;
-    a5p->siguiente = a6p;
-
-    v5->AristaAdyacente = a2p;
-    a2p->siguiente = a5;
-
-    // VER RUTAS Y PESOS DE CADA VERTICE DE VERTICE EN ESPECIFICO : PRUEBA
-
-    ListaVertices copia = listaVertices;
-    int op;
+    int opcion = 0;
     do
     {
-        system("cls");
-
-        std::cout << "\tINGRESE VERTICE A VER SUS VECINOS:\t\n"
-                  << std::endl;
-        std::cout << "presionar 0 para salir\n " << std::endl;
+        vertice copia = listaVertices;
         int i = 1;
-        do
-        {
-            std::cout << "OPCION " << i << ": " << copia->nombre << std::endl;
-            copia = copia->siguiente;
-            i++;
 
-        } while (copia != listaVertices);
-        std::cout << "\ningrese opcion -----> ";
-        std::cin >> op;
+        std::cout << "\n===== MENU PRINCIPAL =====\n";
+        std::cout << "1. Ver vecinos de un vertice\n";
+        std::cout << "2. Calcular ruta mas corta (Dijkstra)\n";
+        std::cout << "0. Salir\n";
+        std::cout << "\nIngrese opcion >> ";
+        std::cin >> opcion;
 
-        switch (op)
+        switch (opcion)
         {
         case 1:
-            MostrarVertice(v1);
+        {
+            std::cout << "\n\tEscoja un vertice para visualizar sus vecinos\t\n\n";
+            copia = listaVertices;
+            i = 1;
+            while (copia != nullptr)
+            {
+                std::cout << i << ". " << copia->nombre << std::endl;
+                copia = copia->siguiente;
+                i++;
+            }
+            std::cout << "0. Volver\n";
+            std::cout << "\nIngrese opcion >> ";
+
+            int sub = 0;
+            std::cin >> sub;
+
+            if (sub >= 1 && sub <= TOTAL_VERTICES)
+                mostrarVertices(vertices[sub - 1]);
+            else if (sub != 0)
+                std::cout << "Opcion invalida\n";
+
             break;
-        case 2:
-            MostrarVertice(v2);
-            break;
-        case 3:
-            MostrarVertice(v3);
-            break;
-        case 4:
-            MostrarVertice(v4);
-            break;
-        case 5:
-            MostrarVertice(v5);
-            break;
-        default:
-            std::cout << "OPCION INVALIDA" << std::endl;
         }
-        system("pause");
-    } while (op != 0);
+
+        case 2:
+        {
+            std::cout << "\n\tVertices disponibles\t\n\n";
+            for (int j = 0; j < TOTAL_VERTICES; j++)
+                std::cout << (j + 1) << ". " << vertices[j]->nombre << std::endl;
+
+            int idxOrigen = 0, idxDestino = 0;
+
+            std::cout << "\nSeleccione el vertice de origen >> ";
+            std::cin >> idxOrigen;
+            std::cout << "Seleccione el vertice de destino >> ";
+            std::cin >> idxDestino;
+
+            if (idxOrigen < 1 || idxOrigen > TOTAL_VERTICES ||
+                idxDestino < 1 || idxDestino > TOTAL_VERTICES)
+            {
+                std::cout << "Opcion invalida\n";
+                break;
+            }
+
+            char respuesta;
+            std::cout << "Filtrar solo rutas accesibles? (s/n) >> ";
+            std::cin >> respuesta;
+
+            bool filtrarAccesibilidad = (respuesta == 's' || respuesta == 'S');
+
+            std::vector<Vertice*> ruta = calcularRutaDijkstra(
+                listaVertices,
+                vertices[idxOrigen - 1],
+                vertices[idxDestino - 1],
+                filtrarAccesibilidad
+            );
+
+            imprimirRuta(ruta);
+
+            break;
+        }
+
+        case 0:
+            std::cout << "Saliendo del programa...\n";
+            break;
+
+        default:
+            std::cout << "Opcion invalida\n";
+        }
+
+    } while (opcion != 0);
+
+    liberarGrafo(listaVertices);
 
     return 0;
 }
-// EJECUTAR PROGRAMA CON .\src\output\programa.exe
