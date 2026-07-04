@@ -42,4 +42,5 @@ arista crearArista(vertice origen, vertice destino, short peso, bool esAccesible
 void agregarArista(vertice origen, arista arista);
 void enlaceBidireccional(vertice a, vertice b, short peso, bool esAccesible, short nivelRestriccion);
 
+void cargarGrafoDesdeArchivo(vertice &cabeza, const std::string &nombre_archivo);
 void liberarGrafo(vertice &cabeza);

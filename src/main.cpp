@@ -45,29 +45,19 @@ void imprimirRuta(const std::vector<vertice> &ruta)
 int main()
 {
     vertice cabeza = nullptr;
-    vertice v1 = crearVertice(1, "Fac. Ing. Geologica", 0.0, 0.0);
-    vertice v2 = crearVertice(2, "Fac. Ing. Metalurgica", 0.0, 0.0);
-    vertice v3 = crearVertice(3, "Fac. Quimica e Ing. Geologica", 0.0, 0.0);
-    vertice v4 = crearVertice(4, "Fac. Ciencias Matematicas", 0.0, 0.0);
-    vertice v5 = crearVertice(5, "Fac. Ciencias Biologicas", 0.0, 0.0);
+    cargarGrafoDesdeArchivo(cabeza, "./assets/mapa.txt");
 
-    cabeza = v1;
-    v1->siguiente = v2;
-    v2->siguiente = v3;
-    v3->siguiente = v4;
-    v4->siguiente = v5;
-    v5->siguiente = nullptr;
+    // Vector auxiliar para poder seleccionar vertices por numero en el menu
+    std::vector<vertice> vertices;
 
-    enlaceBidireccional(v1, v2, 5, true, 0);
-    enlaceBidireccional(v1, v5, 3, true, 0);
-    enlaceBidireccional(v1, v3, 4, true, 0);
-    enlaceBidireccional(v2, v4, 3, true, 0);
-    enlaceBidireccional(v5, v4, 4, true, 0);
-    enlaceBidireccional(v3, v4, 1, true, 0);
+    // Recorrer el vector para obtener los vertices del grafo cargado
+    vertice actual = cabeza;
+    while (actual->siguiente) {
+        vertices.push_back(actual);
+        actual = actual->siguiente;
+    }
 
-    // Arreglo auxiliar para poder seleccionar vertices por numero en el menu
-    const int TOTAL_VERTICES = 5;
-    vertice vertices[TOTAL_VERTICES] = { v1, v2, v3, v4, v5 };
+    const int TOTAL_VERTICES = vertices.size();
 
     int opcion = 0;
     do
