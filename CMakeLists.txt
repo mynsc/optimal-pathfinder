@@ -20,3 +20,7 @@ add_executable(${PROJECT_NAME} src/main.cpp
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 target_link_libraries(${PROJECT_NAME} PRIVATE SFML::Graphics)
 target_include_directories(${PROJECT_NAME} PRIVATE include)
+
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets"
+     DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+)
