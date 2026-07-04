@@ -45,11 +45,11 @@ void imprimirRuta(const std::vector<vertice> &ruta)
 int main()
 {
     vertice cabeza = nullptr;
-    vertice v1 = crearVertice("Fac. Ing. Geologica");
-    vertice v2 = crearVertice("Fac. Ing. Metalurgica");
-    vertice v3 = crearVertice("Fac. Quimica e Ing. Geologica");
-    vertice v4 = crearVertice("Fac. Ciencias Matematicas");
-    vertice v5 = crearVertice("Fac. Ciencias Biologicas");
+    vertice v1 = crearVertice(1, "Fac. Ing. Geologica", 0.0, 0.0);
+    vertice v2 = crearVertice(2, "Fac. Ing. Metalurgica", 0.0, 0.0);
+    vertice v3 = crearVertice(3, "Fac. Quimica e Ing. Geologica", 0.0, 0.0);
+    vertice v4 = crearVertice(4, "Fac. Ciencias Matematicas", 0.0, 0.0);
+    vertice v5 = crearVertice(5, "Fac. Ciencias Biologicas", 0.0, 0.0);
 
     cabeza = v1;
     v1->siguiente = v2;
@@ -124,7 +124,7 @@ int main()
                     indiceDestino < 1 || indiceDestino > TOTAL_VERTICES)
                 {
                     std::cout << "Opcion invalida\n";
-                break;
+                    break;
                 }
 
                 char respuesta;

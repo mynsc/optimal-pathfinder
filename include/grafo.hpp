@@ -6,6 +6,7 @@ struct Vertice;
 struct Arista;
 
 struct Vertice{
+    int id = 0;
     std::string nombre = "";
     float coordenadasX = 0.0;
     float coordenadasY = 0.0;
@@ -32,9 +33,9 @@ struct Arista
 typedef Arista *arista;
 typedef Vertice *vertice;
 
-vertice crearVertice(const std::string &nombre);
+vertice crearVertice(int id, const std::string &nombre, float coordenadasX, float coordenadasY);
 void agregarVertice(vertice &cabeza, vertice v);
-vertice buscarVertice(vertice cabeza, const std::string &nombre);
+vertice buscarVertice(vertice cabeza, int id);
 void mostrarVertices(vertice vertice);
 
 arista crearArista(vertice origen, vertice destino, short peso, bool esAccesible, short niveRestriccion);
