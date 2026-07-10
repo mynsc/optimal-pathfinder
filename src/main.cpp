@@ -1,5 +1,6 @@
 #include "grafo.hpp"
 #include "dijkstra.hpp"
+#include "interfaz.hpp"
 
 #include <iostream>
 #include <vector>
@@ -44,6 +45,7 @@ void imprimirRuta(const std::vector<vertice> &ruta)
 
 int main()
 {
+    inicializarVentana();
     vertice cabeza = nullptr;
     cargarGrafoDesdeArchivo(cabeza, "./assets/mapa.txt");
 

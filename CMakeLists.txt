@@ -17,6 +17,7 @@ FetchContent_MakeAvailable(SFML)
 add_executable(${PROJECT_NAME} src/main.cpp
     src/grafo.cpp
     src/dijkstra.cpp
+    src/interfaz.cpp
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
