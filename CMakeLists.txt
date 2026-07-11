@@ -24,6 +24,9 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 target_link_libraries(${PROJECT_NAME} PRIVATE SFML::Graphics)
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets"
-     DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/assets"
+        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets"
 )
