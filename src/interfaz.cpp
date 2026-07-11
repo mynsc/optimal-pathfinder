@@ -47,6 +47,7 @@ void inicializarVentana(vertice cabeza)
         window.clear();
 
         window.draw(spriteMapa);
+        dibujarRuta(window, cabeza);
         dibujarNodos(window, cabeza);
 
         // Actualizar ventana
@@ -73,5 +74,52 @@ void dibujarNodos(sf::RenderWindow &window, vertice cabeza)
         
         window.draw(nodoForma);
         actual = actual->siguiente;
+    }
+}
+
+void dibujarRuta(sf::RenderWindow &window, vertice cabeza) {
+    float grosor = 3.f;
+
+    // Extraer los puntos del grafo
+    std::vector<sf::Vector2f> puntos;
+    vertice actual = cabeza;
+    while (actual != nullptr)
+    {
+        puntos.push_back(sf::Vector2f(actual->coordenadasX, actual->coordenadasY));
+        actual = actual->siguiente;
+    }
+
+    if (puntos.empty()) return;
+
+    sf::Color colorRuta = sf::Color::Red;
+
+    // Dibujar los segmentos y las uniones
+    for (size_t i = 0; i < puntos.size(); ++i)
+    {
+        // Si hay un siguiente punto, dibujamos el segmento rectangular
+        if (i < puntos.size() - 1)
+        {
+            sf::Vector2f p1 = puntos[i];
+            sf::Vector2f p2 = puntos[i + 1];
+
+            sf::Vector2f direccion = p2 - p1;
+            float longitud = direccion.length(); 
+
+            if (longitud > 0.f)
+            {
+                sf::RectangleShape segmento({longitud, grosor});
+                segmento.setFillColor(colorRuta);
+                
+                // Centrar el origen verticalmente respecto al inicio de la linea
+                segmento.setOrigin({0.f, grosor / 2.f});
+                segmento.setPosition(p1);
+
+                // Obtener el angulo exacto desde el eje X
+                sf::Angle angulo = direccion.angle();
+                segmento.setRotation(angulo); 
+
+                window.draw(segmento);
+            }
+        }
     }
 }
