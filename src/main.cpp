@@ -47,14 +47,14 @@ int main()
 {
     inicializarVentana();
     vertice cabeza = nullptr;
-    cargarGrafoDesdeArchivo(cabeza, "./assets/mapa.txt");
+    cargarGrafoDesdeArchivo(cabeza, "assets/mapa.txt");
 
     // Vector auxiliar para poder seleccionar vertices por numero en el menu
     std::vector<vertice> vertices;
 
     // Recorrer el vector para obtener los vertices del grafo cargado
     vertice actual = cabeza;
-    while (actual->siguiente) {
+    while (actual != nullptr) {
         vertices.push_back(actual);
         actual = actual->siguiente;
     }
