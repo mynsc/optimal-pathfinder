@@ -1,6 +1,7 @@
+#include "interfaz.hpp"
+
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
-#include "interfaz.hpp"
 
 void inicializarVentana()
 {
