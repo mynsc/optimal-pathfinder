@@ -3,7 +3,9 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
-void inicializarVentana()
+#include <iostream>
+
+void inicializarVentana(vertice cabeza)
 {
     // Crear la ventana principal
     sf::RenderWindow window(sf::VideoMode({389, 487}), "Optimal PathFinder - UNMSM");
@@ -45,8 +47,30 @@ void inicializarVentana()
         window.clear();
 
         window.draw(spriteMapa);
-        
+        dibujarNodos(window, cabeza);
+
         // Actualizar ventana
         window.display();
+    }
+}
+
+void dibujarNodos(sf::RenderWindow &window, vertice cabeza)
+{
+    vertice actual = cabeza;
+    
+    // Configurar el circulo base
+    sf::CircleShape nodoForma(5.f); // Radio de 10 pixeles
+    nodoForma.setFillColor(sf::Color::Green);
+    nodoForma.setOutlineThickness(2.f);
+    nodoForma.setOutlineColor(sf::Color::Black);
+
+    while (actual != nullptr)
+    {
+        // SFML posiciona desde la esquina superior izquierda del shape, 
+        // centramos restando el radio a las coordenadas
+        nodoForma.setPosition(sf::Vector2f(actual->coordenadasX - 10.f, actual->coordenadasY - 10.f));
+        
+        window.draw(nodoForma);
+        actual = actual->siguiente;
     }
 }
