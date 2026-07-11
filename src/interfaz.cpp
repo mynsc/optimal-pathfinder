@@ -57,9 +57,10 @@ void inicializarVentana(vertice cabeza)
 void dibujarNodos(sf::RenderWindow &window, vertice cabeza)
 {
     vertice actual = cabeza;
+    float radio = 5.f;
     
     // Configurar el circulo base
-    sf::CircleShape nodoForma(5.f); // Radio de 10 pixeles
+    sf::CircleShape nodoForma(radio);
     nodoForma.setFillColor(sf::Color::Green);
     nodoForma.setOutlineThickness(2.f);
     nodoForma.setOutlineColor(sf::Color::Black);
@@ -68,7 +69,7 @@ void dibujarNodos(sf::RenderWindow &window, vertice cabeza)
     {
         // SFML posiciona desde la esquina superior izquierda del shape, 
         // centramos restando el radio a las coordenadas
-        nodoForma.setPosition(sf::Vector2f(actual->coordenadasX - 10.f, actual->coordenadasY - 10.f));
+        nodoForma.setPosition(sf::Vector2f(actual->coordenadasX - radio, actual->coordenadasY - radio));
         
         window.draw(nodoForma);
         actual = actual->siguiente;
