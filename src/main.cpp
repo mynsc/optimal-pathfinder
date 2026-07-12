@@ -1,4 +1,4 @@
-#include "dijkstra.hpp"
+#include "Dijkstra.hpp"
 #include "grafo.hpp"
 #include "interfaz.hpp"
 
@@ -65,11 +65,7 @@ int main()
     int opcion = 0;
     do
     {
-        std::cout << "\n===== MENU PRINCIPAL =====\n";
-        std::cout << "1. Ver vecinos de un vertice\n";
-        std::cout << "2. Calcular ruta mas corta (Dijkstra)\n";
-        std::cout << "0. Salir\n";
-
+     
         std::cout << "\n===== MENU PRINCIPAL =====\n";
         std::cout << "1. Ver vecinos de un vertice\n";
         std::cout << "2. Calcular ruta mas corta (Dijkstra)\n";
