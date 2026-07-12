@@ -94,19 +94,22 @@ void inicializarVentana(vertice cabeza)
             {
                 if (arrastrando)
                 {
-                    // Calcular diferencia de posicion fisica en la pantalla
-                    sf::Vector2f posicionActual(static_cast<float>(movement->position.x),
-                                           static_cast<float>(movement->position.y));
-                    sf::Vector2f delta = posicionActual - posicionInicioArrastre;
+                    // Obtener la posicion fisica actual del raton
+                    sf::Vector2i posicionFisica = movement->position;
 
-                    // Desplazar la camara
+                    // Convertirla a coordenadas del mundo usando la vista actual
+                    sf::Vector2f posicionActual = window.mapPixelToCoords(posicionFisica, vista);
+                    sf::Vector2f posicionInicio = window.mapPixelToCoords(sf::Vector2i(posicionInicioArrastre), vista);
+
+                    // Calcular el delta en coordenadas de mundo
+                    sf::Vector2f delta = posicionActual - posicionInicio;
+
+                    // Mover la vista
                     vista.move(-delta);
-                    
-                    // Notificar a la ventana que la vista ha cambiado
                     window.setView(vista);
 
-                    // Actualizar posicion de inicio para el proximo fotograma de movimiento
-                    posicionInicioArrastre = posicionActual;
+                    // Actualizar la posición de inicio
+                    posicionInicioArrastre = sf::Vector2f(posicionFisica);
                 }
             }
         }
