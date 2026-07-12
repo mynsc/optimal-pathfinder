@@ -227,13 +227,14 @@ vertice obtenerVerticePorClic(vertice cabeza, sf::Vector2f posicionMouse, float 
 void dibujarNodos(sf::RenderWindow &window, vertice cabeza)
 {
     vertice actual = cabeza;
-    float radio = 5.f;
+    float radio = 8.f;
+    sf::Color color(180, 180, 200);
     
     // Configurar el circulo base
     sf::CircleShape nodoForma(radio);
-    nodoForma.setFillColor(sf::Color::Green);
+    nodoForma.setFillColor(color);
     nodoForma.setOutlineThickness(2.f);
-    nodoForma.setOutlineColor(sf::Color::Black);
+    nodoForma.setOutlineColor(sf::Color::White);
 
     while (actual != nullptr)
     {
