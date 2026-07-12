@@ -41,6 +41,10 @@ void inicializarVentana(vertice cabeza)
 
     EstadoPathfinder estado;
 
+    // Variables de control para la camara
+    bool arrastrando = false;
+    sf::Vector2f posInicioArrastre;
+    sf::Vector2f centroInicio;
 
     // Iniciar el bucle de la ventana
     while (window.isOpen())
@@ -59,9 +63,13 @@ void inicializarVentana(vertice cabeza)
                 window.setView(sf::View(visibleArea));
             }
 
+            // Detectar cuando se presiona un boton del mouse
+            if (const auto* clic = event->getIf<sf::Event::MouseButtonPressed>()) {
             // Detectar eventos de clics
             if (const auto* clickMouse = event->getIf<sf::Event::MouseButtonPressed>()) {
                 detectarEventoClicIzquierdo(clickMouse, cabeza, estado);
+                // Boton izquierdo para calcular ruta con Dijkstra
+                detectarEventoClicIzquierdo(clic, cabeza, estado);
             }
         }
 
@@ -116,15 +124,15 @@ void ajustarVistaAVertices(sf::View &vista, const sf::Vector2u &windowSize,
     zoom = factorNecesario;
 }
 
-void detectarEventoClicIzquierdo(const sf::Event::MouseButtonPressed* clickMouse, vertice cabeza, EstadoPathfinder& estado)
+void detectarEventoClicIzquierdo(const sf::Event::MouseButtonPressed* clic, vertice cabeza, EstadoPathfinder& estado)
 {
-    if (clickMouse->button == sf::Mouse::Button::Left)
+    if (clic->button == sf::Mouse::Button::Left)
     {
         // Obtener la posicion del raton relativa a la ventana
-        sf::Vector2f posicionMouse(static_cast<float>(clickMouse->position.x), 
-                                    static_cast<float>(clickMouse->position.y));
+        sf::Vector2f posicionMouse(static_cast<float>(clic->position.x), 
+                                    static_cast<float>(clic->position.y));
 
-        vertice nodoSeleccionado = obtenerVerticePorClick(cabeza, posicionMouse, 5.f);
+        vertice nodoSeleccionado = obtenerVerticePorClic(cabeza, posicionMouse, 5.f);
 
         if (nodoSeleccionado != nullptr)
         {
@@ -159,7 +167,7 @@ void detectarEventoClicIzquierdo(const sf::Event::MouseButtonPressed* clickMouse
     }
 }
 
-vertice obtenerVerticePorClick(vertice cabeza, sf::Vector2f posicionMouse, float radio)
+vertice obtenerVerticePorClic(vertice cabeza, sf::Vector2f posicionMouse, float radio)
 {
     vertice actual = cabeza;
     while (actual != nullptr)
