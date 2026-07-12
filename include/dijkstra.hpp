@@ -17,4 +17,4 @@
  * @return Vector con el camino ordenado desde origen hasta destino (ambos incluidos).
  *         Si no existe una ruta valida bajo las restricciones dadas, devuelve un vector vacio.
  */
-std::vector<vertice> calcularRutaDijkstra(vertice head, vertice origen, vertice destino, bool filtrarAccesibilidad);
+std::vector<vertice> calcularRutaDijkstra(vertice cabeza, vertice origen, vertice destino, bool filtrarAccesibilidad);

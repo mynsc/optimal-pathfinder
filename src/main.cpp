@@ -121,7 +121,7 @@ int main()
                 }
 
                 char respuesta;
-                std::cout << "Filtrar solo rutas accesibles? (s/n) >> ";
+                std::cout << "Filtrar solo rutas accesibles (s/n) >> ";
                 std::cin >> respuesta;
 
                 bool filtrarAccesibilidad = (respuesta == 's' || respuesta == 'S');

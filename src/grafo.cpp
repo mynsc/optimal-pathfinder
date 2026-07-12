@@ -99,17 +99,17 @@ void enlaceBidireccional(vertice a, vertice b, short peso, bool esAccesible, sho
     agregarArista(b, ba);
 }
 
-void cargarGrafoDesdeArchivo(vertice &cabeza, const std::string &nombre_archivo)
+void cargarGrafoDesdeArchivo(vertice &cabeza, const std::string &nombreArchivo)
 {
-    std::ifstream archivo(nombre_archivo);
+    std::ifstream archivo(nombreArchivo);
     if (!archivo.is_open())
     {
-        std::cerr << "Error al abrir el archivo: " << nombre_archivo << std::endl;
+        std::cout << "Error al abrir el archivo: " << nombreArchivo << std::endl;
         return;
     }
 
     std::string linea;
-    std::string seccion_actual = "";
+    std::string seccionActual = "";
 
     while (std::getline(archivo, linea))
     {
@@ -120,15 +120,15 @@ void cargarGrafoDesdeArchivo(vertice &cabeza, const std::string &nombre_archivo)
         // Detectar secciones analizando los comentarios
         if (linea[0] == '#')
         {
-            if (linea.find("VERTICES") != std::string::npos) seccion_actual = "VERTICES";
-            if (linea.find("ARISTAS") != std::string::npos) seccion_actual = "ARISTAS";
+            if (linea.find("VERTICES") != std::string::npos) seccionActual = "VERTICES";
+            if (linea.find("ARISTAS") != std::string::npos) seccionActual = "ARISTAS";
             continue;
         }
 
         std::stringstream ss(linea);
         std::string token;
 
-        if (seccion_actual == "VERTICES")
+        if (seccionActual == "VERTICES")
         {
             int id;
             std::string nombre;
@@ -143,17 +143,17 @@ void cargarGrafoDesdeArchivo(vertice &cabeza, const std::string &nombre_archivo)
             vertice nuevo = crearVertice(id, nombre, coordenadasX, coordenadasY);
             agregarVertice(cabeza, nuevo);
         } 
-        else if (seccion_actual == "ARISTAS")
+        else if (seccionActual == "ARISTAS")
         {
             int idOrigen, idDestino;
-            short peso, nivel_restriccion;
-            std::string str_accesible;
+            short peso, nivelRestriccion;
+            std::string stringAccesible;
 
             std::getline(ss, token, '|'); idOrigen = std::stoi(token);
             std::getline(ss, token, '|'); idDestino = std::stoi(token);
             std::getline(ss, token, '|'); peso = static_cast<short>(std::stoi(token));
-            std::getline(ss, str_accesible, '|');
-            std::getline(ss, token, '|'); nivel_restriccion = static_cast<short>(std::stoi(token));
+            std::getline(ss, stringAccesible, '|');
+            std::getline(ss, token, '|'); nivelRestriccion = static_cast<short>(std::stoi(token));
 
             // Buscar los punteros reales de los vertices usando el ID numerico
             vertice origen = buscarVertice(cabeza, idOrigen);
@@ -162,8 +162,8 @@ void cargarGrafoDesdeArchivo(vertice &cabeza, const std::string &nombre_archivo)
             // Si ambos existen en memoria, los enlazamos
             if (origen != nullptr && destino != nullptr)
             {
-                bool str = (str_accesible == "true");
-                enlaceBidireccional(origen, destino, peso, str, nivel_restriccion);
+                bool esAccesible = (stringAccesible == "true");
+                enlaceBidireccional(origen, destino, peso, esAccesible, nivelRestriccion);
             }
         }
     }
