@@ -45,7 +45,6 @@ void imprimirRuta(const std::vector<vertice> &ruta)
 
 int main()
 {
-    inicializarVentana();
     vertice cabeza = nullptr;
     cargarGrafoDesdeArchivo(cabeza, "assets/mapa.txt");
 
@@ -60,6 +59,8 @@ int main()
     }
 
     const int TOTAL_VERTICES = vertices.size();
+
+    inicializarVentana(cabeza);
 
     int opcion = 0;
     do
