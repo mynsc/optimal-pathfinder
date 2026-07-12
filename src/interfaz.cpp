@@ -111,6 +111,25 @@ void inicializarVentana(vertice cabeza)
     }
 }
 
+vertice obtenerVerticePorClick(vertice cabeza, sf::Vector2f posicionMouse, float radio)
+{
+    vertice actual = cabeza;
+    while (actual != nullptr)
+    {
+        // Calcular distancia euclidiana entre el clic y el nodo
+        float dx = posicionMouse.x - actual->coordenadasX;
+        float dy = posicionMouse.y - actual->coordenadasY;
+        float distancia = std::sqrt(dx * dx + dy * dy);
+
+        // Si el click cae dentro del radio del nodo, lo retornamos
+        if (distancia <= radio) {
+            return actual;
+        }
+        actual = actual->siguiente;
+    }
+    return nullptr;
+}
+
 void dibujarNodos(sf::RenderWindow &window, vertice cabeza)
 {
     vertice actual = cabeza;
@@ -175,23 +194,4 @@ void dibujarRutaDijkstra(sf::RenderWindow &window, const std::vector<vertice> &r
             }
         }
     }
-}
-
-vertice obtenerVerticePorClick(vertice cabeza, sf::Vector2f posicionMouse, float radio)
-{
-    vertice actual = cabeza;
-    while (actual != nullptr)
-    {
-        // Calcular distancia euclidiana entre el clic y el nodo
-        float dx = posicionMouse.x - actual->coordenadasX;
-        float dy = posicionMouse.y - actual->coordenadasY;
-        float distancia = std::sqrt(dx * dx + dy * dy);
-
-        // Si el click cae dentro del radio del nodo, lo retornamos
-        if (distancia <= radio) {
-            return actual;
-        }
-        actual = actual->siguiente;
-    }
-    return nullptr;
 }

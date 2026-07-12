@@ -7,6 +7,7 @@
 
 void inicializarVentana(vertice cabeza);
 
-void dibujarNodos(sf::RenderWindow &window, vertice cabeza);
 vertice obtenerVerticePorClick(vertice cabeza, sf::Vector2f mousePosicion, float radio);
+
+void dibujarNodos(sf::RenderWindow &window, vertice cabeza);
 void dibujarRutaDijkstra(sf::RenderWindow &window, const std::vector<vertice> &ruta);
