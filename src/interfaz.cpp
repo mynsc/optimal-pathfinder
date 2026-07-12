@@ -68,7 +68,7 @@ void inicializarVentana(vertice cabeza)
                 window.setView(vista);
             }
 
-            // Detectar cuando se presiona un boton del mouse
+            // Detectar cuando se presiona un boton del raton
             if (const auto* click = event->getIf<sf::Event::MouseButtonPressed>()) {
                 // Boton derecho para arrastrar
                 if (click->button == sf::Mouse::Button::Right)
@@ -89,13 +89,13 @@ void inicializarVentana(vertice cabeza)
                 }
             }
 
-            // Detectar cuando se suelta un boton del mouse
+            // Detectar cuando se suelta un boton del raton
             else if (const auto* releaseMouse = event->getIf<sf::Event::MouseButtonReleased>())
             {
                 if (releaseMouse->button == sf::Mouse::Button::Right) arrastrando = false;
             }
 
-            // Detectar cuando el mouse se mueve
+            // Detectar cuando el raton se mueve
             else if (const auto* movement = event->getIf<sf::Event::MouseMoved>())
             {
                 if (arrastrando)
