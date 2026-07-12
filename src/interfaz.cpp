@@ -177,14 +177,14 @@ void procesarSeleccionDeNodos(sf::Vector2f posicionMouse, vertice cabeza, Estado
 
     if (nodoSeleccionado == nullptr) return;
 
-    // Primer click: Asignar origen
+    // Primer clic: Asignar origen
     if (estado.origen == nullptr) 
     {
         estado.origen = nodoSeleccionado;
         std::cout << "Nodo origen: " << estado.origen->nombre << " (ID: " << estado.origen->id << ")\n";
     } 
 
-    // Segundo click: Asignar destino y calcular ruta
+    // Segundo clic: Asignar destino y calcular ruta
     else if (estado.destino == nullptr && nodoSeleccionado != estado.origen) 
     {
         estado.destino = nodoSeleccionado;
@@ -194,7 +194,7 @@ void procesarSeleccionDeNodos(sf::Vector2f posicionMouse, vertice cabeza, Estado
         estado.mostrarRuta = true;
     }
 
-    // Tercer click: Reiniciar la seleccion
+    // Tercer clic: Reiniciar la seleccion
     else 
     {
         estado.origen = nodoSeleccionado;
@@ -210,15 +210,17 @@ vertice obtenerVerticePorClic(vertice cabeza, sf::Vector2f posicionMouse, float 
     vertice actual = cabeza;
     while (actual != nullptr)
     {
-        // Calcular distancia euclidiana entre el click y el nodo
+        // Calcular distancia euclidiana entre el clic y el nodo
         float dx = posicionMouse.x - actual->coordenadasX;
         float dy = posicionMouse.y - actual->coordenadasY;
         float distancia = std::sqrt(dx * dx + dy * dy);
 
-        // Si el click cae dentro del radio del nodo, lo retornamos
-        if (distancia <= radio) {
+        // Si el clic cae dentro del radio del nodo, lo retornamos
+        if (distancia <= radio)
+        {
             return actual;
         }
+
         actual = actual->siguiente;
     }
     return nullptr;
