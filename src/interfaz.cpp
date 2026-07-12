@@ -27,13 +27,17 @@ void inicializarVentana(vertice cabeza)
     // Crear el sprite del mapa y asignarle la textura
     sf::Sprite spriteMapa(texturaMapa);
 
-    // Escalar el sprite del mapa para que cubra toda la ventana
+    // Obtener dimensiones de la ventana y el mapa
     sf::Vector2u windowSize = window.getSize();
     sf::Vector2u textureSize = texturaMapa.getSize();
 
-    // Calculos matematicos para la escala de la textura
-    float scaleX = static_cast<float>(windowSize.x) / textureSize.x;
-    float scaleY = static_cast<float>(windowSize.y) / textureSize.y;
+    sf::View vista(sf::FloatRect(
+        sf::Vector2f(0.f, 0.f),
+        sf::Vector2f(
+            static_cast<float>(windowSize.x), 
+            static_cast<float>(windowSize.y)
+        )
+    ));
 
     vertice origen = nullptr;
     vertice destino = nullptr;
@@ -50,6 +54,13 @@ void inicializarVentana(vertice cabeza)
             // Cerrar ventana: Salir
             if (event->is<sf::Event::Closed>())
                 window.close();
+
+            // Detectar evento de maximizar ventana
+            if (const auto* resized = event->getIf<sf::Event::Resized>()) {
+                // Ajustar la camara a las nuevas dimensiones reales de la pantalla en pixeles
+                sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
+                window.setView(sf::View(visibleArea));
+            }
 
             // Detectar evento de click izquierdo del raton
             if (const auto* clickMouse = event->getIf<sf::Event::MouseButtonPressed>()) {
