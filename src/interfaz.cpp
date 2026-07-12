@@ -43,7 +43,7 @@ void inicializarVentana(vertice cabeza)
 
     // Variables de control para la camara
     bool arrastrando = false;
-    sf::Vector2f posInicioArrastre;
+    sf::Vector2f posicionInicioArrastre;
     sf::Vector2f centroInicio;
 
     // Iniciar el bucle de la ventana
@@ -64,12 +64,45 @@ void inicializarVentana(vertice cabeza)
             }
 
             // Detectar cuando se presiona un boton del mouse
-            if (const auto* clic = event->getIf<sf::Event::MouseButtonPressed>()) {
-            // Detectar eventos de clics
-            if (const auto* clickMouse = event->getIf<sf::Event::MouseButtonPressed>()) {
-                detectarEventoClicIzquierdo(clickMouse, cabeza, estado);
+            if (const auto* click = event->getIf<sf::Event::MouseButtonPressed>()) {
+                // Boton derecho para arrastrar
+                if (click->button == sf::Mouse::Button::Right)
+                {
+                    arrastrando = true;
+                    posicionInicioArrastre = sf::Vector2f(static_cast<float>(click->position.x),
+                                                     static_cast<float>(click->position.y));
+                    centroInicio = vista.getCenter();
+                }
+                
                 // Boton izquierdo para calcular ruta con Dijkstra
-                detectarEventoClicIzquierdo(clic, cabeza, estado);
+                detectarEventoClicIzquierdo(click, cabeza, estado);
+            }
+
+            // Detectar cuando se suelta un boton del mouse
+            else if (const auto* releaseMouse = event->getIf<sf::Event::MouseButtonReleased>())
+            {
+                if (releaseMouse->button == sf::Mouse::Button::Right) arrastrando = false;
+            }
+
+            // Detectar cuando el mouse se mueve
+            else if (const auto* movement = event->getIf<sf::Event::MouseMoved>())
+            {
+                if (arrastrando)
+                {
+                    // Calcular diferencia de posicion fisica en la pantalla
+                    sf::Vector2f posicionActual(static_cast<float>(movement->position.x),
+                                           static_cast<float>(movement->position.y));
+                    sf::Vector2f delta = posicionActual - posicionInicioArrastre;
+
+                    // Desplazar la camara
+                    vista.move(-delta);
+                    
+                    // Notificar a la ventana que la vista ha cambiado
+                    window.setView(vista);
+
+                    // Actualizar posicion de inicio para el proximo fotograma de movimiento
+                    posicionInicioArrastre = posicionActual;
+                }
             }
         }
 
@@ -124,13 +157,13 @@ void ajustarVistaAVertices(sf::View &vista, const sf::Vector2u &windowSize,
     zoom = factorNecesario;
 }
 
-void detectarEventoClicIzquierdo(const sf::Event::MouseButtonPressed* clic, vertice cabeza, EstadoPathfinder& estado)
+void detectarEventoClicIzquierdo(const sf::Event::MouseButtonPressed* click, vertice cabeza, EstadoPathfinder& estado)
 {
-    if (clic->button == sf::Mouse::Button::Left)
+    if (click->button == sf::Mouse::Button::Left)
     {
         // Obtener la posicion del raton relativa a la ventana
-        sf::Vector2f posicionMouse(static_cast<float>(clic->position.x), 
-                                    static_cast<float>(clic->position.y));
+        sf::Vector2f posicionMouse(static_cast<float>(click->position.x), 
+                                    static_cast<float>(click->position.y));
 
         vertice nodoSeleccionado = obtenerVerticePorClic(cabeza, posicionMouse, 5.f);
 
@@ -172,7 +205,7 @@ vertice obtenerVerticePorClic(vertice cabeza, sf::Vector2f posicionMouse, float 
     vertice actual = cabeza;
     while (actual != nullptr)
     {
-        // Calcular distancia euclidiana entre el clic y el nodo
+        // Calcular distancia euclidiana entre el click y el nodo
         float dx = posicionMouse.x - actual->coordenadasX;
         float dy = posicionMouse.y - actual->coordenadasY;
         float distancia = std::sqrt(dx * dx + dy * dy);
