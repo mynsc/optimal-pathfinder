@@ -6,6 +6,7 @@
 #include <vector>
 
 void inicializarVentana(vertice cabeza);
+void ajustarVistaAVertices(sf::View &vista, const sf::Vector2u &windowSize, const std::vector<vertice> &verticesAMostrar, float &zoom);
 
 void detectarEventoClicIzquierdo(const std::optional<sf::Event> event, vertice cabeza, std::vector<vertice> rutaDijkstra, bool mostrarRutaDijkstra);
 vertice obtenerVerticePorClick(vertice cabeza, sf::Vector2f mousePosicion, float radio);

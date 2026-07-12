@@ -78,6 +78,43 @@ void inicializarVentana(vertice cabeza)
         window.display();
     }
 }
+
+void ajustarVistaAVertices(sf::View &vista, const sf::Vector2u &windowSize,
+                           const std::vector<vertice> &verticesAMostrar,
+                           float &zoom)
+{
+    float margen = 80.f;
+
+    if (verticesAMostrar.empty()) return;
+
+    float minX = verticesAMostrar[0]->coordenadasX;
+    float maxX = verticesAMostrar[0]->coordenadasX;
+    float minY = verticesAMostrar[0]->coordenadasY;
+    float maxY = verticesAMostrar[0]->coordenadasY;
+
+    for (vertice v : verticesAMostrar)
+    {
+        minX = std::min(minX, (v->coordenadasX));
+        maxX = std::max(maxX, (v->coordenadasX));
+        minY = std::min(minY, (v->coordenadasY));
+        maxY = std::max(maxY, (v->coordenadasY));
+    }
+
+    float anchoNecesario = (maxX - minX) + margen * 2.0f;
+    float altoNecesario = (maxY - minY) + margen * 2.0f;
+
+    float anchoVentana = static_cast<float>(windowSize.x);
+    float altoVentana = static_cast<float>(windowSize.y);
+
+    // Nunca bajar de zoom 1:1
+    float factorNecesario = std::max({1.0f, anchoNecesario / anchoVentana, altoNecesario / altoVentana});
+
+    vista.setSize(sf::Vector2f(anchoVentana * factorNecesario, altoVentana * factorNecesario));
+    vista.setCenter(sf::Vector2f((minX + maxX) / 2.0f, (minY + maxY) / 2.0f));
+
+    zoom = factorNecesario;
+}
+
 void detectarEventoClicIzquierdo(const std::optional<sf::Event> event, vertice cabeza, std::vector<vertice> rutaDijkstra, bool mostrarRutaDijkstra)
 {
     vertice origen = nullptr;
