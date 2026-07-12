@@ -1,30 +1,28 @@
-#include "../include/dijkstra.hpp"
-#include "../include/arista.hpp"
+#include "dijkstra.hpp"
+#include "grafo.hpp"
 
 #include <limits>
 
-std::vector<Vertice *> calcularRutaDijkstra(ListaVertices head, Vertice *origen, Vertice *destino, bool filtrarAccesibilidad)
+std::vector<vertice > calcularRutaDijkstra(vertice cabeza, vertice origen, vertice destino, bool filtrarAccesibilidad)
 {
-    std::vector<Vertice *> ruta;
+    std::vector<vertice> ruta;
 
-    if (!head || !origen || !destino)
-        return ruta;
+    if (!cabeza || !origen || !destino) return ruta;
 
     // Contar cuantos vertices hay en la lista enlazada
     int totalVertices = 0;
-    for (Vertice *actual = head; actual != nullptr; actual = actual->siguiente)
-        totalVertices++;
+    for (vertice actual = cabeza; actual != nullptr; actual = actual->siguiente) totalVertices++;
 
-    // Reservar arreglos paralelos con "new" (mismo indice = mismo vertice)
-    Vertice **vertices = new Vertice *[totalVertices];
+    // Reservar arreglos paralelos (mismo indice = mismo vertice)
+    vertice *vertices = new vertice[totalVertices];
     int *distancia = new int[totalVertices];
-    Vertice **anterior = new Vertice *[totalVertices];
+    vertice *anterior = new vertice[totalVertices];
     bool *visitado = new bool[totalVertices];
 
     const int INFINITO = std::numeric_limits<int>::max();
 
     int i = 0;
-    for (Vertice *actual = head; actual != nullptr; actual = actual->siguiente, i++)
+    for (vertice actual = cabeza; actual != nullptr; actual = actual->siguiente, i++)
     {
         vertices[i] = actual;
         distancia[i] = INFINITO;
@@ -54,10 +52,10 @@ std::vector<Vertice *> calcularRutaDijkstra(ListaVertices head, Vertice *origen,
 
     distancia[indiceOrigen] = 0;
 
-    //Bucle principal de Dijkstra (version O(V^2), sin cola de prioridad)
-    for (int iter = 0; iter < totalVertices; iter++)
+    // Bucle principal de Dijkstra
+    for (int i = 0; i < totalVertices; i++)
     {
-        // 4a) Buscar el vertice no visitado con menor distancia
+        // Buscar el vertice no visitado con menor distancia
         int indiceActual = -1;
         int menor = INFINITO;
 
@@ -71,28 +69,24 @@ std::vector<Vertice *> calcularRutaDijkstra(ListaVertices head, Vertice *origen,
         }
 
         // Si no queda ningun vertice alcanzable, terminamos
-        if (indiceActual == -1)
-            break;
+        if (indiceActual == -1) break;
 
         visitado[indiceActual] = true;
-        Vertice *verticeActual = vertices[indiceActual];
+        vertice verticeActual = vertices[indiceActual];
 
-        if (verticeActual == destino)
-            break;
+        if (verticeActual == destino) break;
 
         // Recorrer las aristas adyacentes al vertice actual (lista enlazada de aristas)
-        for (Arista *arista = verticeActual->aristaAdyacente; arista != nullptr; arista = arista->siguiente)
+        for (arista arista = verticeActual->aristaAdyacente; arista != nullptr; arista = arista->siguiente)
         {
-            // --- Condicional critico de accesibilidad/restriccion ---
+            // --- Condicional de accesibilidad/restriccion ---
             // Se ignora la arista por completo si:
             //   a) se pidio filtrar por accesibilidad y la arista no es accesible, o
             //   b) la arista tiene algun nivel de restriccion (>0), sin importar el filtro.
-            if (filtrarAccesibilidad && !arista->esAccesible)
-                continue;
-            if (arista->nivelRestriccion > 0)
-                continue;
+            if (filtrarAccesibilidad && !arista->esAccesible) continue;
+            if (arista->nivelRestriccion > 0) continue;
 
-            Vertice *vecino = arista->destino;
+            vertice vecino = arista->destino;
 
             // Buscar el indice del vecino dentro del arreglo de vertices
             int indiceVecino = -1;
@@ -105,8 +99,7 @@ std::vector<Vertice *> calcularRutaDijkstra(ListaVertices head, Vertice *origen,
                 }
             }
 
-            if (indiceVecino == -1 || visitado[indiceVecino])
-                continue;
+            if (indiceVecino == -1 || visitado[indiceVecino]) continue;
 
             int nuevaDistancia = distancia[indiceActual] + arista->peso;
 
@@ -139,47 +132,46 @@ std::vector<Vertice *> calcularRutaDijkstra(ListaVertices head, Vertice *origen,
     }
 
     // Reconstruir la ruta caminando hacia atras con el arreglo "anterior".
-    //    Primero se cuenta el largo del camino, luego se llena de atras hacia adelante.
+    // Primero se cuenta el largo del camino, luego se llena de atras hacia adelante.
     int largoRuta = 0;
-    for (Vertice *v = destino; v != nullptr;)
+    for (vertice v = destino; v != nullptr;)
     {
         largoRuta++;
-        if (v == origen)
-            break;
+        if (v == origen) break;
 
-        int idx = -1;
+        int indice = -1;
         for (int j = 0; j < totalVertices; j++)
         {
             if (vertices[j] == v)
             {
-                idx = j;
+                indice = j;
                 break;
             }
         }
 
-        v = anterior[idx];
+        v = anterior[indice];
     }
 
     ruta.resize(largoRuta);
 
-    int pos = largoRuta - 1;
-    for (Vertice *v = destino; v != nullptr;)
+    int posicion = largoRuta - 1;
+    vertice v = destino;
+    while (v != nullptr)
     {
-        ruta[pos--] = v;
-        if (v == origen)
-            break;
+        ruta[posicion--] = v;
+        if (v == origen) break;
 
-        int idx = -1;
+        int indice = -1;
         for (int j = 0; j < totalVertices; j++)
         {
             if (vertices[j] == v)
             {
-                idx = j;
+                indice = j;
                 break;
             }
         }
 
-        v = anterior[idx];
+        v = anterior[indice];
     }
 
     delete[] vertices;

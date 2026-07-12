@@ -1,17 +1,13 @@
 #pragma once
-#include "vertice.hpp"
-#include <vector>
+#include "grafo.hpp"
 
-// Alias solicitado por la firma del metodo: representa la cabeza de la
-// lista enlazada de vertices (mismo tipo que "vertice", solo que aqui se
-// usa semanticamente como "toda la lista", no como un vertice puntual).
-typedef Vertice *ListaVertices;
+#include <vector>
 
 /**
  * Calcula la ruta mas corta entre "origen" y "destino" usando el algoritmo
  * de Dijkstra, recorriendo la lista enlazada de vertices que comienza en "head".
  *
- * @param head                Cabeza de la lista enlazada de vertices del grafo.
+ * @param head                 Cabeza de la lista enlazada de vertices del grafo.
  * @param origen               Vertice de partida.
  * @param destino              Vertice de llegada.
  * @param filtrarAccesibilidad Si es true, se descartan las aristas con esAccesible == false.
@@ -21,4 +17,4 @@ typedef Vertice *ListaVertices;
  * @return Vector con el camino ordenado desde origen hasta destino (ambos incluidos).
  *         Si no existe una ruta valida bajo las restricciones dadas, devuelve un vector vacio.
  */
-std::vector<Vertice*> calcularRutaDijkstra(ListaVertices head, Vertice* origen, Vertice* destino, bool filtrarAccesibilidad);
+std::vector<vertice> calcularRutaDijkstra(vertice head, vertice origen, vertice destino, bool filtrarAccesibilidad);
