@@ -5,25 +5,7 @@
 #include <iostream>
 #include <vector>
 
-int main()
-{
-    vertice cabeza = nullptr;
-    cargarGrafoDesdeArchivo(cabeza, "assets/mapa.txt");
-
-    // Vector auxiliar para poder seleccionar vertices por numero en el menu
-    std::vector<vertice> vertices;
-
-    // Recorrer el vector para obtener los vertices del grafo cargado
-    vertice actual = cabeza;
-    while (actual != nullptr) {
-        vertices.push_back(actual);
-        actual = actual->siguiente;
-    }
-
-    const int TOTAL_VERTICES = vertices.size();
-
-    inicializarVentana(cabeza);
-
+void debug(const int TOTAL_VERTICES, vertice cabeza, std::vector<vertice> &vertices) {
     int opcion = 0;
     do
     {
@@ -109,6 +91,29 @@ int main()
         }
         
     } while (opcion != 0);
+}
+
+int main()
+{
+    vertice cabeza = nullptr;
+    cargarGrafoDesdeArchivo(cabeza, "assets/mapa.txt");
+
+    // Vector auxiliar para poder seleccionar vertices por numero en el menu
+    std::vector<vertice> vertices;
+
+    // Recorrer el vector para obtener los vertices del grafo cargado
+    vertice actual = cabeza;
+    while (actual != nullptr) {
+        vertices.push_back(actual);
+        actual = actual->siguiente;
+    }
+
+    const int TOTAL_VERTICES = vertices.size();
+
+    inicializarVentana(cabeza);
+
+    bool debugear = false;
+    if (debugear) debug(TOTAL_VERTICES, cabeza, vertices);
 
     liberarGrafo(cabeza);
 
