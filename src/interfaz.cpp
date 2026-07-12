@@ -1,8 +1,11 @@
 #include "interfaz.hpp"
 
+#include "dijkstra.hpp"
+
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
+#include <cmath>
 #include <iostream>
 
 void inicializarVentana(vertice cabeza)
@@ -32,6 +35,12 @@ void inicializarVentana(vertice cabeza)
     float scaleX = static_cast<float>(windowSize.x) / textureSize.x;
     float scaleY = static_cast<float>(windowSize.y) / textureSize.y;
 
+    vertice origen = nullptr;
+    vertice destino = nullptr;
+    std::vector<vertice> rutaDijkstra;
+    bool filtrarAccesibilidad = false;
+    bool mostrarRutaDijkstra = false;
+
     // Iniciar el bucle de la ventana
     while (window.isOpen())
     {
@@ -41,13 +50,56 @@ void inicializarVentana(vertice cabeza)
             // Cerrar ventana: Salir
             if (event->is<sf::Event::Closed>())
                 window.close();
+
+            // Detectar click derecho
+            if (const auto* clickMouse = event->getIf<sf::Event::MouseButtonPressed>()) {
+                if (clickMouse->button == sf::Mouse::Button::Left)
+                {
+                    // Obtener la posicion del raton relativa a la ventana
+                    sf::Vector2f posicionMouse(static_cast<float>(clickMouse->position.x), 
+                                               static_cast<float>(clickMouse->position.y));
+
+                    vertice nodoSeleccionado = obtenerVerticePorClick(cabeza, posicionMouse, 5.f);
+
+                    if (nodoSeleccionado != nullptr)
+                    {
+                        if (origen == nullptr) 
+                        {
+                            // Primer click: Asignar origen
+                            origen = nodoSeleccionado;
+                        } 
+                        else if (destino == nullptr && nodoSeleccionado != origen) 
+                        {
+                            // Segundo click: Asignar destino y calcular ruta
+                            destino = nodoSeleccionado;
+
+                            rutaDijkstra = calcularRutaDijkstra(cabeza, origen, destino, filtrarAccesibilidad);
+
+                            imprimirRuta(rutaDijkstra);
+
+                            mostrarRutaDijkstra = true;
+                        } 
+                        else 
+                        {
+                            // Tercer click: Reiniciar la seleccion
+                            origen = nodoSeleccionado;
+                            destino = nullptr;
+                            rutaDijkstra.clear();
+                            mostrarRutaDijkstra = false;
+                        }
+                    }
+                }
+            }
         }
 
         // Limpiar ventana
         window.clear();
 
         window.draw(spriteMapa);
-        dibujarRuta(window, cabeza);
+
+        if (mostrarRutaDijkstra)
+            dibujarRutaDijkstra(window, rutaDijkstra);
+            
         dibujarNodos(window, cabeza);
 
         // Actualizar ventana
@@ -77,24 +129,21 @@ void dibujarNodos(sf::RenderWindow &window, vertice cabeza)
     }
 }
 
-void dibujarRuta(sf::RenderWindow &window, vertice cabeza) {
+void dibujarRutaDijkstra(sf::RenderWindow &window, const std::vector<vertice> &ruta)
+{
     float grosor = 3.f;
 
     // Extraer los puntos del grafo
     std::vector<sf::Vector2f> puntos;
-    vertice actual = cabeza;
-    while (actual != nullptr)
-    {
-        puntos.push_back(sf::Vector2f(actual->coordenadasX, actual->coordenadasY));
-        actual = actual->siguiente;
-    }
+    for (int i = 0; i < ruta.size(); ++i)
+        puntos.push_back(sf::Vector2f(ruta[i]->coordenadasX, ruta[i]->coordenadasY));
 
     if (puntos.empty()) return;
 
     sf::Color colorRuta = sf::Color::Red;
 
     // Dibujar los segmentos y las uniones
-    for (size_t i = 0; i < puntos.size(); ++i)
+    for (int i = 0; i < puntos.size(); ++i)
     {
         // Si hay un siguiente punto, dibujamos el segmento rectangular
         if (i < puntos.size() - 1)
