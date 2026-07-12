@@ -51,8 +51,9 @@ void inicializarVentana(vertice cabeza)
             if (event->is<sf::Event::Closed>())
                 window.close();
 
-            // Detectar click derecho
+            // Detectar evento de click izquierdo del raton
             if (const auto* clickMouse = event->getIf<sf::Event::MouseButtonPressed>()) {
+
                 if (clickMouse->button == sf::Mouse::Button::Left)
                 {
                     // Obtener la posicion del raton relativa a la ventana
@@ -67,11 +68,13 @@ void inicializarVentana(vertice cabeza)
                         {
                             // Primer click: Asignar origen
                             origen = nodoSeleccionado;
+                            std::cout << "Nodo origen: " << origen->nombre << "(ID: " << origen->id << ")\n";
                         } 
                         else if (destino == nullptr && nodoSeleccionado != origen) 
                         {
                             // Segundo click: Asignar destino y calcular ruta
                             destino = nodoSeleccionado;
+                            std::cout << "Nodo destino: " << destino->nombre << "(ID: " << destino->id << ")\n";
 
                             rutaDijkstra = calcularRutaDijkstra(cabeza, origen, destino, filtrarAccesibilidad);
 
@@ -83,6 +86,7 @@ void inicializarVentana(vertice cabeza)
                         {
                             // Tercer click: Reiniciar la seleccion
                             origen = nodoSeleccionado;
+                            std::cout << "Nuevo nodo origen: " << origen->nombre << "(ID: " << origen->id << ")\n";
                             destino = nullptr;
                             rutaDijkstra.clear();
                             mostrarRutaDijkstra = false;
@@ -99,7 +103,7 @@ void inicializarVentana(vertice cabeza)
 
         if (mostrarRutaDijkstra)
             dibujarRutaDijkstra(window, rutaDijkstra);
-            
+
         dibujarNodos(window, cabeza);
 
         // Actualizar ventana
