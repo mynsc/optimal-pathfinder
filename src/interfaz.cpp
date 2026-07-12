@@ -39,10 +39,8 @@ void inicializarVentana(vertice cabeza)
         )
     ));
 
-    vertice origen = nullptr;
-    vertice destino = nullptr;
+    // Variables para la obtencion de la ruta por Dijkstra
     std::vector<vertice> rutaDijkstra;
-    bool filtrarAccesibilidad = false;
     bool mostrarRutaDijkstra = false;
 
     // Iniciar el bucle de la ventana
@@ -63,6 +61,29 @@ void inicializarVentana(vertice cabeza)
             }
 
             // Detectar evento de click izquierdo del raton
+            detectarEventoClicIzquierdo(event, cabeza, rutaDijkstra, mostrarRutaDijkstra);
+        }
+
+        // Limpiar ventana
+        window.clear();
+
+        window.draw(spriteMapa);
+
+        if (mostrarRutaDijkstra)
+            dibujarRutaDijkstra(window, rutaDijkstra);
+
+        dibujarNodos(window, cabeza);
+
+        // Actualizar ventana
+        window.display();
+    }
+}
+void detectarEventoClicIzquierdo(const std::optional<sf::Event> event, vertice cabeza, std::vector<vertice> rutaDijkstra, bool mostrarRutaDijkstra)
+{
+    vertice origen = nullptr;
+    vertice destino = nullptr;
+    bool filtrarAccesibilidad = false;
+
             if (const auto* clickMouse = event->getIf<sf::Event::MouseButtonPressed>()) {
 
                 if (clickMouse->button == sf::Mouse::Button::Left)
@@ -107,20 +128,6 @@ void inicializarVentana(vertice cabeza)
             }
         }
 
-        // Limpiar ventana
-        window.clear();
-
-        window.draw(spriteMapa);
-
-        if (mostrarRutaDijkstra)
-            dibujarRutaDijkstra(window, rutaDijkstra);
-
-        dibujarNodos(window, cabeza);
-
-        // Actualizar ventana
-        window.display();
-    }
-}
 
 vertice obtenerVerticePorClick(vertice cabeza, sf::Vector2f posicionMouse, float radio)
 {

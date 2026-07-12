@@ -7,6 +7,7 @@
 
 void inicializarVentana(vertice cabeza);
 
+void detectarEventoClicIzquierdo(const std::optional<sf::Event> event, vertice cabeza, std::vector<vertice> rutaDijkstra, bool mostrarRutaDijkstra);
 vertice obtenerVerticePorClick(vertice cabeza, sf::Vector2f mousePosicion, float radio);
 
 void dibujarNodos(sf::RenderWindow &window, vertice cabeza);
