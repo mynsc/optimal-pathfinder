@@ -130,9 +130,38 @@ void inicializarVentana(vertice cabeza)
 
         dibujarNodos(window, cabeza);
 
+        if (estado.mostrarRuta)
+        {
+            int i = 0;
+            float radio = 8.f;
+
+            for (vertice v: estado.rutaDijkstra)
+            {
+                sf::CircleShape resaltado;
+                resaltado.setRadius(radio);
+
+                // Colorear vertice de origen
+                if (i == 0)
+                    resaltado.setFillColor(sf::Color(0, 100, 255, 100));
+
+                // Colorear vertice de destino
+                else if (i == estado.rutaDijkstra.size() - 1)
+                    resaltado.setFillColor(sf::Color(0, 220, 0, 100));
+
+                // Colorear vertices intermedios de la ruta
+                else
+                    resaltado.setFillColor(sf::Color(255, 50, 50, 100));
+
+                resaltado.setPosition(sf::Vector2f(v->coordenadasX - radio, v->coordenadasY - radio));
+                window.draw(resaltado);
+
+                i++;
+            }
+        }
+
         if (estado.nodoSeleccionado != nullptr)
         {
-            //  Configurar forma para resaltado del nodo seleccionado
+            // Configurar forma para resaltado del nodo seleccionado
             float radio = 14.f;
 
             sf::CircleShape nodoSeleccionadoForma(radio);
