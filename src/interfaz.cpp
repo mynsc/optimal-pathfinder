@@ -121,50 +121,49 @@ void detectarEventoClicIzquierdo(const std::optional<sf::Event> event, vertice c
     vertice destino = nullptr;
     bool filtrarAccesibilidad = false;
 
-            if (const auto* clickMouse = event->getIf<sf::Event::MouseButtonPressed>()) {
+    if (const auto* clickMouse = event->getIf<sf::Event::MouseButtonPressed>()) {
 
-                if (clickMouse->button == sf::Mouse::Button::Left)
+        if (clickMouse->button == sf::Mouse::Button::Left)
+        {
+            // Obtener la posicion del raton relativa a la ventana
+            sf::Vector2f posicionMouse(static_cast<float>(clickMouse->position.x), 
+                                        static_cast<float>(clickMouse->position.y));
+
+            vertice nodoSeleccionado = obtenerVerticePorClick(cabeza, posicionMouse, 5.f);
+
+            if (nodoSeleccionado != nullptr)
+            {
+                if (origen == nullptr) 
                 {
-                    // Obtener la posicion del raton relativa a la ventana
-                    sf::Vector2f posicionMouse(static_cast<float>(clickMouse->position.x), 
-                                               static_cast<float>(clickMouse->position.y));
+                    // Primer click: Asignar origen
+                    origen = nodoSeleccionado;
+                    std::cout << "Nodo origen: " << origen->nombre << "(ID: " << origen->id << ")\n";
+                } 
+                else if (destino == nullptr && nodoSeleccionado != origen) 
+                {
+                    // Segundo click: Asignar destino y calcular ruta
+                    destino = nodoSeleccionado;
+                    std::cout << "Nodo destino: " << destino->nombre << "(ID: " << destino->id << ")\n";
 
-                    vertice nodoSeleccionado = obtenerVerticePorClick(cabeza, posicionMouse, 5.f);
+                    rutaDijkstra = calcularRutaDijkstra(cabeza, origen, destino, filtrarAccesibilidad);
 
-                    if (nodoSeleccionado != nullptr)
-                    {
-                        if (origen == nullptr) 
-                        {
-                            // Primer click: Asignar origen
-                            origen = nodoSeleccionado;
-                            std::cout << "Nodo origen: " << origen->nombre << "(ID: " << origen->id << ")\n";
-                        } 
-                        else if (destino == nullptr && nodoSeleccionado != origen) 
-                        {
-                            // Segundo click: Asignar destino y calcular ruta
-                            destino = nodoSeleccionado;
-                            std::cout << "Nodo destino: " << destino->nombre << "(ID: " << destino->id << ")\n";
+                    imprimirRuta(rutaDijkstra);
 
-                            rutaDijkstra = calcularRutaDijkstra(cabeza, origen, destino, filtrarAccesibilidad);
-
-                            imprimirRuta(rutaDijkstra);
-
-                            mostrarRutaDijkstra = true;
-                        } 
-                        else 
-                        {
-                            // Tercer click: Reiniciar la seleccion
-                            origen = nodoSeleccionado;
-                            std::cout << "Nuevo nodo origen: " << origen->nombre << "(ID: " << origen->id << ")\n";
-                            destino = nullptr;
-                            rutaDijkstra.clear();
-                            mostrarRutaDijkstra = false;
-                        }
-                    }
+                    mostrarRutaDijkstra = true;
+                } 
+                else 
+                {
+                    // Tercer click: Reiniciar la seleccion
+                    origen = nodoSeleccionado;
+                    std::cout << "Nuevo nodo origen: " << origen->nombre << "(ID: " << origen->id << ")\n";
+                    destino = nullptr;
+                    rutaDijkstra.clear();
+                    mostrarRutaDijkstra = false;
                 }
             }
         }
-
+    }
+}
 
 vertice obtenerVerticePorClick(vertice cabeza, sf::Vector2f posicionMouse, float radio)
 {
