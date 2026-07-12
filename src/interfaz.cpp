@@ -85,7 +85,7 @@ void inicializarVentana(vertice cabeza)
                     // Convertir el pixel de la pantalla a coordenadas del mapa real
                     sf::Vector2f posicionMundo = window.mapPixelToCoords(click->position, vista);
 
-                    procesarSeleccionDeNodos(posicionMundo, cabeza, estado);
+                    procesarSeleccionDeNodos(window, posicionMundo, cabeza, estado);
                 }
             }
 
@@ -130,6 +130,23 @@ void inicializarVentana(vertice cabeza)
 
         dibujarNodos(window, cabeza);
 
+        if (estado.nodoSeleccionado != nullptr)
+        {
+            //  Configurar forma para resaltado del nodo seleccionado
+            float radio = 14.f;
+
+            sf::CircleShape nodoSeleccionadoForma(radio);
+            nodoSeleccionadoForma.setFillColor(sf::Color(255, 255, 255, 80));
+            nodoSeleccionadoForma.setOutlineThickness(2.f);
+            nodoSeleccionadoForma.setOutlineColor(sf::Color::Yellow);
+            nodoSeleccionadoForma.setPosition(sf::Vector2f(
+                estado.nodoSeleccionado->coordenadasX - radio, 
+                estado.nodoSeleccionado->coordenadasY - radio
+            ));
+                
+            window.draw(nodoSeleccionadoForma);
+        }
+
         // Actualizar ventana
         window.display();
     }
@@ -171,11 +188,13 @@ void ajustarVistaAVertices(sf::View &vista, const sf::Vector2u &windowSize,
     zoom = factorNecesario;
 }
 
-void procesarSeleccionDeNodos(sf::Vector2f posicionMouse, vertice cabeza, EstadoPathfinder& estado)
+void procesarSeleccionDeNodos(sf::RenderWindow &window, sf::Vector2f posicionMouse, vertice cabeza, EstadoPathfinder& estado)
 {
     vertice nodoSeleccionado = obtenerVerticePorClic(cabeza, posicionMouse, 5.f);
 
     if (nodoSeleccionado == nullptr) return;
+
+    estado.nodoSeleccionado = nodoSeleccionado;
 
     // Primer clic: Asignar origen
     if (estado.origen == nullptr) 

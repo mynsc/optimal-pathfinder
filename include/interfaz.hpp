@@ -11,12 +11,14 @@ struct EstadoPathfinder {
     std::vector<vertice> rutaDijkstra;
     bool mostrarRuta = false;
     bool filtrarAccesibilidad = false;
+
+    vertice nodoSeleccionado = nullptr;
 };
 
 void inicializarVentana(vertice cabeza);
 void ajustarVistaAVertices(sf::View &vista, const sf::Vector2u &windowSize, const std::vector<vertice> &verticesAMostrar, float &zoom);
 
-void procesarSeleccionDeNodos(sf::Vector2f posicionMouse, vertice cabeza, EstadoPathfinder& estado);
+void procesarSeleccionDeNodos(sf::RenderWindow &window, sf::Vector2f posicionMouse, vertice cabeza, EstadoPathfinder& estado);
 vertice obtenerVerticePorClic(vertice cabeza, sf::Vector2f mousePosicion, float radio);
 
 void dibujarNodos(sf::RenderWindow &window, vertice cabeza);
