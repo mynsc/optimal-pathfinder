@@ -5,44 +5,6 @@
 #include <iostream>
 #include <vector>
 
-// Imprime el resultado de calcularRutaDijkstra: la secuencia de vertices
-// y el peso total acumulado de la ruta (recalculado recorriendo las aristas).
-void imprimirRuta(const std::vector<vertice> &ruta)
-{
-    if (ruta.empty())
-    {
-        std::cout << "\nNo existe una ruta valida entre esos vertices con las restricciones indicadas\n";
-        return;
-    }
-
-    int pesoTotal = 0;
-
-    std::cout << "\nRuta encontrada:\n";
-    for (size_t i = 0; i < ruta.size(); i++)
-    {
-        std::cout << ruta[i]->nombre;
-
-        if (i != ruta.size() - 1)
-        {
-            // Buscar el peso de la arista entre ruta[i] y ruta[i + 1] para sumarlo
-            arista actual = ruta[i]->aristaAdyacente;
-            while (actual != nullptr)
-            {
-                if (actual->destino == ruta[i + 1])
-                {
-                    pesoTotal += actual->peso;
-                    break;
-                }
-                actual = actual->siguiente;
-            }
-
-            std::cout << "  ->  ";
-        }
-    }
-
-    std::cout << "\n\nPeso total de la ruta: " << pesoTotal << "\n";
-}
-
 int main()
 {
     vertice cabeza = nullptr;

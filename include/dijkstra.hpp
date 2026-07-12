@@ -18,3 +18,7 @@
  *         Si no existe una ruta valida bajo las restricciones dadas, devuelve un vector vacio.
  */
 std::vector<vertice> calcularRutaDijkstra(vertice cabeza, vertice origen, vertice destino, bool filtrarAccesibilidad);
+
+// Imprime el resultado de calcularRutaDijkstra: la secuencia de vertices
+// y el peso total acumulado de la ruta (recalculado recorriendo las aristas).
+void imprimirRuta(const std::vector<vertice> &ruta);
