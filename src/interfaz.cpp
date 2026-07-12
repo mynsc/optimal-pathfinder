@@ -58,9 +58,14 @@ void inicializarVentana(vertice cabeza)
 
             // Detectar evento de maximizar ventana
             if (const auto* resized = event->getIf<sf::Event::Resized>()) {
-                // Ajustar la camara a las nuevas dimensiones reales de la pantalla en pixeles
-                sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
-                window.setView(sf::View(visibleArea));
+                // Calcular las nuevas dimensiones
+                sf::Vector2f newWindowSize(resized->size);
+
+                // Actualizar vista
+                vista.setSize(newWindowSize);
+
+                // Asignar nuevas dimensiones a la ventana
+                window.setView(vista);
             }
 
             // Detectar cuando se presiona un boton del mouse
