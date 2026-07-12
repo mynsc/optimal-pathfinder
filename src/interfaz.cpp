@@ -39,9 +39,8 @@ void inicializarVentana(vertice cabeza)
         )
     ));
 
-    // Variables para la obtencion de la ruta por Dijkstra
-    std::vector<vertice> rutaDijkstra;
-    bool mostrarRutaDijkstra = false;
+    EstadoPathfinder estado;
+
 
     // Iniciar el bucle de la ventana
     while (window.isOpen())
@@ -62,7 +61,7 @@ void inicializarVentana(vertice cabeza)
 
             // Detectar eventos de clics
             if (const auto* clickMouse = event->getIf<sf::Event::MouseButtonPressed>()) {
-                detectarEventoClicIzquierdo(clickMouse, cabeza, rutaDijkstra, mostrarRutaDijkstra);
+                detectarEventoClicIzquierdo(clickMouse, cabeza, estado);
             }
         }
 
@@ -71,8 +70,8 @@ void inicializarVentana(vertice cabeza)
 
         window.draw(spriteMapa);
 
-        if (mostrarRutaDijkstra)
-            dibujarRutaDijkstra(window, rutaDijkstra);
+        if (estado.mostrarRuta)
+            dibujarRutaDijkstra(window, estado.rutaDijkstra);
 
         dibujarNodos(window, cabeza);
 
@@ -117,12 +116,8 @@ void ajustarVistaAVertices(sf::View &vista, const sf::Vector2u &windowSize,
     zoom = factorNecesario;
 }
 
-void detectarEventoClicIzquierdo(const sf::Event::MouseButtonPressed *clickMouse, vertice cabeza, std::vector<vertice> rutaDijkstra, bool mostrarRutaDijkstra)
+void detectarEventoClicIzquierdo(const sf::Event::MouseButtonPressed* clickMouse, vertice cabeza, EstadoPathfinder& estado)
 {
-    vertice origen = nullptr;
-    vertice destino = nullptr;
-    bool filtrarAccesibilidad = false;
-
     if (clickMouse->button == sf::Mouse::Button::Left)
     {
         // Obtener la posicion del raton relativa a la ventana
@@ -133,32 +128,32 @@ void detectarEventoClicIzquierdo(const sf::Event::MouseButtonPressed *clickMouse
 
         if (nodoSeleccionado != nullptr)
         {
-            if (origen == nullptr) 
+            if (estado.origen == nullptr) 
             {
                 // Primer click: Asignar origen
-                origen = nodoSeleccionado;
-                std::cout << "Nodo origen: " << origen->nombre << "(ID: " << origen->id << ")\n";
+                estado.origen = nodoSeleccionado;
+                std::cout << "Nodo origen: " << estado.origen->nombre << "(ID: " << estado.origen->id << ")\n";
             } 
-            else if (destino == nullptr && nodoSeleccionado != origen) 
+            else if (estado.destino == nullptr && nodoSeleccionado != estado.origen) 
             {
                 // Segundo click: Asignar destino y calcular ruta
-                destino = nodoSeleccionado;
-                std::cout << "Nodo destino: " << destino->nombre << "(ID: " << destino->id << ")\n";
+                estado.destino = nodoSeleccionado;
+                std::cout << "Nodo destino: " << estado.destino->nombre << "(ID: " << estado.destino->id << ")\n";
 
-                rutaDijkstra = calcularRutaDijkstra(cabeza, origen, destino, filtrarAccesibilidad);
+                estado.rutaDijkstra = calcularRutaDijkstra(cabeza, estado.origen, estado.destino, estado.filtrarAccesibilidad);
 
-                imprimirRuta(rutaDijkstra);
+                imprimirRuta(estado.rutaDijkstra);
 
-                mostrarRutaDijkstra = true;
+                estado.mostrarRuta = true;
             } 
             else 
             {
                 // Tercer click: Reiniciar la seleccion
-                origen = nodoSeleccionado;
-                std::cout << "Nuevo nodo origen: " << origen->nombre << "(ID: " << origen->id << ")\n";
-                destino = nullptr;
-                rutaDijkstra.clear();
-                mostrarRutaDijkstra = false;
+                estado.origen = nodoSeleccionado;
+                std::cout << "Nuevo nodo origen: " << estado.origen->nombre << "(ID: " << estado.origen->id << ")\n";
+                estado.destino = nullptr;
+                estado.rutaDijkstra.clear();
+                estado.mostrarRuta = false;
             }
         }
     }
