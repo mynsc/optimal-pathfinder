@@ -11,7 +11,10 @@
 void inicializarVentana(vertice cabeza)
 {
     // Crear la ventana principal
-    sf::RenderWindow window(sf::VideoMode({389, 487}), "Optimal PathFinder - UNMSM");
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Optimal PathFinder - UNMSM");
+    
+    // Evitar encoger la ventana menos de 500 x 500
+    window.setMinimumSize(sf::Vector2u({500, 500}));
 
     // Cargar la imagen del icono
     sf::Image icono;
