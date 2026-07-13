@@ -5,6 +5,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 
@@ -118,6 +119,29 @@ void inicializarVentana(vertice cabeza)
 
                     // Mover la vista
                     vista.move(-delta);
+
+                    sf::Vector2f centro = vista.getCenter();
+                    sf::Vector2f viewSize = vista.getSize();
+
+                    // Limites en X: La mitad del ancho de la vista
+                    float minX = viewSize.x / 2.f;
+                    float maxX = static_cast<float>(textureSize.x) - minX;
+
+                    // Limites en Y: La mitad del alto de la vista
+                    float minY = viewSize.y / 2.f;
+                    float maxY = static_cast<float>(textureSize.y) - minY;
+
+                    // Validar X: Si el zoom hace la vista mas grande que el mapa, la centramos
+                    if (minX > maxX) centro.x = static_cast<float>(textureSize.x) / 2.f;
+                    else centro.x = std::clamp(centro.x, minX, maxX);
+
+                    // Validar Y: Si el zoom hace la vista mas grande que el mapa, la centramos
+                    if (minY > maxY) centro.y = static_cast<float>(textureSize.y) / 2.f;
+                    else centro.y = std::clamp(centro.y, minY, maxY);
+
+                    // Aplicar la pocicion corregida
+                    vista.setCenter(centro);
+
                     window.setView(vista);
 
                     // Actualizar la posición de inicio
@@ -130,7 +154,7 @@ void inicializarVentana(vertice cabeza)
             {
                 if (rueda->wheel == sf::Mouse::Wheel::Vertical)
                 {
-                    manejarZoomRaton(window, vista, rueda, zoomActual);
+                    manejarZoomRaton(window, vista, rueda, zoomActual, textureSize);
                 }
             }
         }
@@ -290,31 +314,39 @@ vertice obtenerVerticePorClic(vertice cabeza, sf::Vector2f posicionMouse, float 
     return nullptr;
 }
 
-void manejarZoomRaton(sf::RenderWindow &window, sf::View &vista, const sf::Event::MouseWheelScrolled *rueda, float &zoomActual)
+void manejarZoomRaton(sf::RenderWindow &window, sf::View &vista, const sf::Event::MouseWheelScrolled *rueda, float &zoomActual, const sf::Vector2u &textureSize)
 {
-    // Calcular factor base
     float factorZoom = 1.f - rueda->delta * 0.1f;
     float nuevoZoom = zoomActual * factorZoom;
 
-    // Limitar el zoom exacto
+    // Calcular el limite dinamico
+    sf::Vector2f winSize(window.getSize());
+    float maxZoomX = (static_cast<float>(textureSize.x) * 5.f) / winSize.x;
+    float maxZoomY = (static_cast<float>(textureSize.y) * 5.f) / winSize.y;
+    
+    // El zoom maximo sera 5.f, a menos que el mapa exija un limite menor para no ver el fondo
+    float maxZoomPermitido = std::min({5.f, maxZoomX, maxZoomY});
+    // Garantizar que el maximo no colapse por el minimo 2.5f
+    maxZoomPermitido = std::max(2.5f, maxZoomPermitido); 
+
+    // Aplicar los limites al zoom
     if (nuevoZoom < 2.5f) 
     {
-        // Si nos pasamos hacia abajo, calculamos el factor justo para llegar a 1.f
         factorZoom = 2.5f / zoomActual;
         zoomActual = 2.5f;
     } 
-    else if (nuevoZoom > 5.f) 
+    else if (nuevoZoom > maxZoomPermitido) 
     {
         // Si nos pasamos hacia arriba, calculamos el factor justo para llegar a 5.f
-        factorZoom = 5.f / zoomActual;
-        zoomActual = 5.f;
+        factorZoom = maxZoomPermitido / zoomActual;
+        zoomActual = maxZoomPermitido;
     }
     else
     {
         zoomActual = nuevoZoom;
     }
 
-    // Aplicar transformaciones SOLO si el zoom realmente va a cambiar
+    // Aplicar transformaciones solo si el zoom realmente va a cambiar
     // Si factorZoom es 1.f, significa que ya estamos en el limite y bloqueamos la camara
     if (factorZoom != 1.f)
     {
@@ -335,6 +367,21 @@ void manejarZoomRaton(sf::RenderWindow &window, sf::View &vista, const sf::Event
             vista.zoom(factorZoom);
         }
 
+        // Bloquear bordes para que la camara  se deslice
+        sf::Vector2f centro = vista.getCenter();
+        sf::Vector2f viewSize = vista.getSize();
+
+        float minX = viewSize.x / 2.f;
+        float maxX = static_cast<float>(textureSize.x) - minX;
+        float minY = viewSize.y / 2.f;
+        float maxY = static_cast<float>(textureSize.y) - minY;
+
+        // Como arriba garantizamos que la vista no es mayor que el mapa
+        centro.x = std::clamp(centro.x, minX, maxX);
+        centro.y = std::clamp(centro.y, minY, maxY);
+
+        vista.setCenter(centro);
+        
         // Aplicar la vista actualizada
         window.setView(vista);
     }
