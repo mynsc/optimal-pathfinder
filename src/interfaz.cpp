@@ -58,19 +58,21 @@ void inicializarVentana(vertice cabeza)
                 window.close();
 
             // Detectar evento de maximizar ventana
-            if (const auto* resized = event->getIf<sf::Event::Resized>()) {
+            if (const auto* resized = event->getIf<sf::Event::Resized>())
+            {
                 // Calcular las nuevas dimensiones
                 sf::Vector2f newWindowSize(resized->size);
 
-                // Actualizar vista
-                vista.setSize(newWindowSize);
+                // Mantener el nivel de zoom actual proporcional a la nueva ventana
+                vista.setSize({newWindowSize.x * zoomActual, newWindowSize.y * zoomActual});
 
                 // Asignar nuevas dimensiones a la ventana
                 window.setView(vista);
             }
 
             // Detectar cuando se presiona un boton del raton
-            if (const auto* click = event->getIf<sf::Event::MouseButtonPressed>()) {
+            if (const auto* click = event->getIf<sf::Event::MouseButtonPressed>())
+            {
                 // Boton derecho para arrastrar
                 if (click->button == sf::Mouse::Button::Right)
                 {
