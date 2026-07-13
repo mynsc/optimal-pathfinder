@@ -48,7 +48,7 @@ void inicializarVentana(vertice cabeza)
     bool arrastrando = false;
     sf::Vector2f posicionInicioArrastre;
     sf::Vector2f centroInicio;
-    float zoomActual = 1.f;
+    float zoomActual = 5.f;
 
     // Iniciar el bucle de la ventana
     while (window.isOpen())
@@ -67,7 +67,7 @@ void inicializarVentana(vertice cabeza)
                 sf::Vector2f newWindowSize(resized->size);
 
                 // Mantener el nivel de zoom actual proporcional a la nueva ventana
-                vista.setSize({newWindowSize.x * zoomActual, newWindowSize.y * zoomActual});
+                vista.setSize({newWindowSize.x * zoomActual / 5.f, newWindowSize.y * zoomActual / 5.f});
 
                 // Asignar nuevas dimensiones a la ventana
                 window.setView(vista);
@@ -297,11 +297,11 @@ void manejarZoomRaton(sf::RenderWindow &window, sf::View &vista, const sf::Event
     float nuevoZoom = zoomActual * factorZoom;
 
     // Limitar el zoom exacto
-    if (nuevoZoom < 1.f) 
+    if (nuevoZoom < 2.5f) 
     {
         // Si nos pasamos hacia abajo, calculamos el factor justo para llegar a 1.f
-        factorZoom = 1.f / zoomActual;
-        zoomActual = 1.f;
+        factorZoom = 2.5f / zoomActual;
+        zoomActual = 2.5f;
     } 
     else if (nuevoZoom > 5.f) 
     {
