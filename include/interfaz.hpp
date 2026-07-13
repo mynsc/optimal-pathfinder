@@ -20,6 +20,7 @@ void ajustarVistaAVertices(sf::View &vista, const sf::Vector2u &windowSize, cons
 
 void procesarSeleccionDeNodos(sf::RenderWindow &window, sf::Vector2f posicionMouse, vertice cabeza, EstadoPathfinder& estado);
 vertice obtenerVerticePorClic(vertice cabeza, sf::Vector2f mousePosicion, float radio);
+void manejarZoomRaton(sf::RenderWindow &window, sf::View &vista, const sf::Event::MouseWheelScrolled *rueda, float &zoomActual);
 
 void dibujarNodos(sf::RenderWindow &window, vertice cabeza);
 void dibujarRutaDijkstra(sf::RenderWindow &window, const std::vector<vertice> &ruta);

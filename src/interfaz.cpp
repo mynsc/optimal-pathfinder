@@ -45,6 +45,7 @@ void inicializarVentana(vertice cabeza)
     bool arrastrando = false;
     sf::Vector2f posicionInicioArrastre;
     sf::Vector2f centroInicio;
+    float zoomActual = 1.f;
 
     // Iniciar el bucle de la ventana
     while (window.isOpen())
@@ -118,7 +119,17 @@ void inicializarVentana(vertice cabeza)
                     posicionInicioArrastre = sf::Vector2f(posicionFisica);
                 }
             }
+
+            // Detectar cuando se gira la rueda del raton
+            else if (const auto *rueda = event->getIf<sf::Event::MouseWheelScrolled>())
+            {
+                if (rueda->wheel == sf::Mouse::Wheel::Vertical)
+                {
+                    manejarZoomRaton(window, vista, rueda, zoomActual);
+                }
+            }
         }
+    
 
         // Limpiar ventana
         window.clear();
@@ -209,7 +220,7 @@ void ajustarVistaAVertices(sf::View &vista, const sf::Vector2u &windowSize,
     float altoVentana = static_cast<float>(windowSize.y);
 
     // Nunca bajar de zoom 1:1
-    float factorNecesario = std::max({1.0f, anchoNecesario / anchoVentana, altoNecesario / altoVentana});
+    float factorNecesario = std::max({1.f, anchoNecesario / anchoVentana, altoNecesario / altoVentana});
 
     vista.setSize(sf::Vector2f(anchoVentana * factorNecesario, altoVentana * factorNecesario));
     vista.setCenter(sf::Vector2f((minX + maxX) / 2.0f, (minY + maxY) / 2.0f));
@@ -272,6 +283,56 @@ vertice obtenerVerticePorClic(vertice cabeza, sf::Vector2f posicionMouse, float 
         actual = actual->siguiente;
     }
     return nullptr;
+}
+
+void manejarZoomRaton(sf::RenderWindow &window, sf::View &vista, const sf::Event::MouseWheelScrolled *rueda, float &zoomActual)
+{
+    // Calcular factor base
+    float factorZoom = 1.f - rueda->delta * 0.1f;
+    float nuevoZoom = zoomActual * factorZoom;
+
+    // Limitar el zoom exacto
+    if (nuevoZoom < 1.f) 
+    {
+        // Si nos pasamos hacia abajo, calculamos el factor justo para llegar a 1.f
+        factorZoom = 1.f / zoomActual;
+        zoomActual = 1.f;
+    } 
+    else if (nuevoZoom > 5.f) 
+    {
+        // Si nos pasamos hacia arriba, calculamos el factor justo para llegar a 5.f
+        factorZoom = 5.f / zoomActual;
+        zoomActual = 5.f;
+    }
+    else
+    {
+        zoomActual = nuevoZoom;
+    }
+
+    // Aplicar transformaciones SOLO si el zoom realmente va a cambiar
+    // Si factorZoom es 1.f, significa que ya estamos en el limite y bloqueamos la camara
+    if (factorZoom != 1.f)
+    {
+        if (rueda->delta > 0) 
+        {
+            // Acercar hacia el cursor
+            sf::Vector2i pixelPos(rueda->position.x, rueda->position.y);
+            sf::Vector2f posMundoAntes = window.mapPixelToCoords(pixelPos, vista);
+            
+            vista.zoom(factorZoom);
+            
+            sf::Vector2f posMundoDespues = window.mapPixelToCoords(pixelPos, vista);
+            vista.move(posMundoAntes - posMundoDespues);
+        }
+        else 
+        {
+            // Alejar desde el centro sin seguir el raton
+            vista.zoom(factorZoom);
+        }
+
+        // Aplicar la vista actualizada
+        window.setView(vista);
+    }
 }
 
 void dibujarNodos(sf::RenderWindow &window, vertice cabeza)
