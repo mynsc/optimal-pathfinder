@@ -24,9 +24,10 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 target_link_libraries(${PROJECT_NAME} PRIVATE SFML::Graphics)
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 
-add_custom_command(
-    TARGET ${PROJECT_NAME} POST_BUILD
+add_custom_target(SincronizarRecursos ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/assets"
         "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets"
+    COMMENT "Verificando y actualizando la carpeta assets en bin/..."
 )
+add_dependencies(${PROJECT_NAME} SincronizarRecursos)
