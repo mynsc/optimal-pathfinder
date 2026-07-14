@@ -263,7 +263,7 @@ void ajustarVistaAVertices(sf::View &vista, const sf::Vector2u &windowSize,
 
 void procesarSeleccionDeNodos(sf::RenderWindow &window, sf::Vector2f posicionMouse, vertice cabeza, EstadoPathfinder& estado)
 {
-    vertice nodoSeleccionado = obtenerVerticePorClic(cabeza, posicionMouse, 5.f);
+    vertice nodoSeleccionado = obtenerVerticePorClic(cabeza, posicionMouse, 8.f);
 
     if (nodoSeleccionado == nullptr) return;
 
