@@ -54,7 +54,8 @@ void inicializarVentana(vertice cabeza)
 
     // Centrar la camara en medio del mapa al iniciar
     vista.setCenter(sf::Vector2f(textureSize.x / 2.f, textureSize.y / 2.f));
- 
+    window.setView(vista);
+
     EstadoPathfinder estado;
     nodoPuntoInteres puntosInteres = inicializarPuntosInteres();
     nodoPuntoInteres puntoActual = puntosInteres;
