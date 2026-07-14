@@ -131,13 +131,17 @@ void inicializarVentana(vertice cabeza)
                     float minY = viewSize.y / 2.f;
                     float maxY = static_cast<float>(textureSize.y) - minY;
 
+                    // Forzar matematicamente a que el maximo nunca sea inferior al minimo
+                    float seguroMaxX = std::max(minX, maxX);
+                    float seguroMaxY = std::max(minY, maxY);
+
                     // Validar X: Si el zoom hace la vista mas grande que el mapa, la centramos
                     if (minX > maxX) centro.x = static_cast<float>(textureSize.x) / 2.f;
-                    else centro.x = std::clamp(centro.x, minX, maxX);
+                    else centro.x = std::clamp(centro.x, minX, seguroMaxX);
 
                     // Validar Y: Si el zoom hace la vista mas grande que el mapa, la centramos
                     if (minY > maxY) centro.y = static_cast<float>(textureSize.y) / 2.f;
-                    else centro.y = std::clamp(centro.y, minY, maxY);
+                    else centro.y = std::clamp(centro.y, minY, seguroMaxY);
 
                     // Aplicar la pocicion corregida
                     vista.setCenter(centro);
@@ -376,9 +380,13 @@ void manejarZoomRaton(sf::RenderWindow &window, sf::View &vista, const sf::Event
         float minY = viewSize.y / 2.f;
         float maxY = static_cast<float>(textureSize.y) - minY;
 
+        // Forzar matematicamente a que el maximo nunca sea inferior al minimo
+        float seguroMaxX = std::max(minX, maxX);
+        float seguroMaxY = std::max(minY, maxY);
+
         // Como arriba garantizamos que la vista no es mayor que el mapa
-        centro.x = std::clamp(centro.x, minX, maxX);
-        centro.y = std::clamp(centro.y, minY, maxY);
+        centro.x = std::clamp(centro.x, minX, seguroMaxX);
+        centro.y = std::clamp(centro.y, minY, seguroMaxY);
 
         vista.setCenter(centro);
         
