@@ -579,46 +579,110 @@ void dibujarNodos(sf::RenderWindow &window, vertice cabeza)
     }
 }
 
+std::vector<sf::Vector2f> generarPuntosSuavizados(const std::vector<sf::Vector2f> &puntos, int segmentosPorTramo = 8)
+{
+    if (puntos.size() < 3) return puntos;
+
+    // Catmull-Rom necesita un punto "fantasma" antes del primero y despues
+    // del ultimo para poder calcular las tangentes de los extremos
+    std::vector<sf::Vector2f> extendidos;
+    extendidos.push_back(puntos.front());
+    extendidos.insert(extendidos.end(), puntos.begin(), puntos.end());
+    extendidos.push_back(puntos.back());
+
+    std::vector<sf::Vector2f> suavizados;
+
+    for (size_t i = 0; i + 3 < extendidos.size(); ++i)
+    {
+        sf::Vector2f p0 = extendidos[i];
+        sf::Vector2f p1 = extendidos[i + 1];
+        sf::Vector2f p2 = extendidos[i + 2];
+        sf::Vector2f p3 = extendidos[i + 3];
+
+        for (int j = 0; j < segmentosPorTramo; ++j)
+        {
+            float t = static_cast<float>(j) / static_cast<float>(segmentosPorTramo);
+            float t2 = t * t;
+            float t3 = t2 * t;
+
+            float x = 0.5f * ((2.f * p1.x) + (-p0.x + p2.x) * t +
+                (2.f * p0.x - 5.f * p1.x + 4.f * p2.x - p3.x) * t2 +
+                (-p0.x + 3.f * p1.x - 3.f * p2.x + p3.x) * t3);
+
+            float y = 0.5f * ((2.f * p1.y) + (-p0.y + p2.y) * t +
+                (2.f * p0.y - 5.f * p1.y + 4.f * p2.y - p3.y) * t2 +
+                (-p0.y + 3.f * p1.y - 3.f * p2.y + p3.y) * t3);
+
+            suavizados.push_back(sf::Vector2f(x, y));
+        }
+    }
+
+    suavizados.push_back(puntos.back());
+
+    return suavizados;
+}
+
 void dibujarRutaDijkstra(sf::RenderWindow &window, const std::vector<vertice> &ruta)
 {
     float grosor = 3.f;
 
-    // Extraer los puntos del grafo
-    std::vector<sf::Vector2f> puntos;
-    for (int i = 0; i < ruta.size(); ++i)
-        puntos.push_back(sf::Vector2f(ruta[i]->coordenadasX, ruta[i]->coordenadasY));
+    if (ruta.size() < 2) return;
+
+    // Construir la lista de puntos crudos siguiendo el camino REAL de cada
+    // tramo de la ruta: buscamos la arista real entre cada par de nodos
+    // consecutivos y usamos sus waypoints trazados a mano en vez de una
+    // linea recta.
+    std::vector<sf::Vector2f> puntosCrudos;
+    puntosCrudos.push_back(sf::Vector2f(ruta[0]->coordenadasX, ruta[0]->coordenadasY));
+
+    for (size_t i = 0; i + 1 < ruta.size(); ++i)
+    {
+        arista tramo = buscarArista(ruta[i], ruta[i + 1]);
+
+        // Si la arista existe y tiene waypoints registrados, los agregamos
+        // en orden (ya vienen orientados en el sentido origen->destino que
+        // corresponde a este tramo, gracias a enlaceBidireccional)
+        if (tramo != nullptr)
+        {
+            for (const sf::Vector2f &punto : tramo->puntosIntermedios)
+                puntosCrudos.push_back(punto);
+        }
+
+        // Cerrar el tramo en el nodo destino. Si no se encontro la arista o
+        // no tiene waypoints, esto deja una linea recta de respaldo.
+        puntosCrudos.push_back(sf::Vector2f(ruta[i + 1]->coordenadasX, ruta[i + 1]->coordenadasY));
+    }
+
+    // Aplicar el suavizado Catmull-Rom sobre el trazado real completo
+    std::vector<sf::Vector2f> puntos = generarPuntosSuavizados(puntosCrudos);
 
     if (puntos.empty()) return;
 
     sf::Color colorRuta = sf::Color::Red;
 
     // Dibujar los segmentos y las uniones
-    for (int i = 0; i < puntos.size(); ++i)
+    for (size_t i = 0; i + 1 < puntos.size(); ++i)
     {
-        // Si hay un siguiente punto, dibujamos el segmento rectangular
-        if (i < puntos.size() - 1)
+        sf::Vector2f p1 = puntos[i];
+        sf::Vector2f p2 = puntos[i + 1];
+
+        sf::Vector2f direccion = p2 - p1;
+        float longitud = direccion.length();
+
+        if (longitud > 0.f)
         {
-            sf::Vector2f p1 = puntos[i];
-            sf::Vector2f p2 = puntos[i + 1];
+            sf::RectangleShape segmento({longitud, grosor});
+            segmento.setFillColor(colorRuta);
 
-            sf::Vector2f direccion = p2 - p1;
-            float longitud = direccion.length(); 
+            // Centrar el origen verticalmente respecto al inicio de la linea
+            segmento.setOrigin({0.f, grosor / 2.f});
+            segmento.setPosition(p1);
 
-            if (longitud > 0.f)
-            {
-                sf::RectangleShape segmento({longitud, grosor});
-                segmento.setFillColor(colorRuta);
-                
-                // Centrar el origen verticalmente respecto al inicio de la linea
-                segmento.setOrigin({0.f, grosor / 2.f});
-                segmento.setPosition(p1);
+            // Obtener el angulo exacto desde el eje X
+            sf::Angle angulo = direccion.angle();
+            segmento.setRotation(angulo);
 
-                // Obtener el angulo exacto desde el eje X
-                sf::Angle angulo = direccion.angle();
-                segmento.setRotation(angulo); 
-
-                window.draw(segmento);
-            }
+            window.draw(segmento);
         }
     }
 }
