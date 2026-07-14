@@ -8,6 +8,13 @@
 // Estructura para que la cola de prioridad ordene de menor a mayor frecuencia
 struct CompararNodos {
     bool operator()(NodoHuffman* izquierdo, NodoHuffman* derecho) {
+
+        // Si las frecuencias son iguales, el empate se rompe por el caracter
+        if (izquierdo->frecuencia == derecho->frecuencia)
+        {
+            return izquierdo->caracter > derecho->caracter;
+        }
+
         return izquierdo->frecuencia > derecho->frecuencia;
     }
 };
@@ -105,19 +112,17 @@ void descomprimirDatosMapa(const std::string& rutaEntrada, const std::string& ru
     int sizeMap;
     entradaBinaria.read(reinterpret_cast<char*>(&sizeMap), sizeof(sizeMap));
 
-    std::unordered_map<char, int> frecuencias;
-    for (int i = 0; i < sizeMap; ++i) {
+    std::priority_queue<NodoHuffman*, std::vector<NodoHuffman*>, CompararNodos> colaPrioridad;
+
+    for (int i = 0; i < sizeMap; ++i)
+    {
         char caracter;
         int frecuencia;
         entradaBinaria.read(&caracter, sizeof(caracter));
         entradaBinaria.read(reinterpret_cast<char*>(&frecuencia), sizeof(frecuencia));
-        frecuencias[caracter] = frecuencia;
-    }
-
-    // Reconstruir el arbol de Huffman identico al original
-    std::priority_queue<NodoHuffman*, std::vector<NodoHuffman*>, CompararNodos> colaPrioridad;
-    for (auto par : frecuencias) {
-        colaPrioridad.push(new NodoHuffman{par.first, par.second});
+        
+        // Insertar directamente garantiza el mismo orden exacto del archivo
+        colaPrioridad.push(new NodoHuffman{caracter, frecuencia});
     }
 
     while (colaPrioridad.size() > 1) {
