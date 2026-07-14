@@ -1,12 +1,15 @@
 #include "interfaz.hpp"
 
 #include "dijkstra.hpp"
+#include "grafo.hpp"
+#include "huffman.hpp"
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
 #include <algorithm>
 #include <cmath>
+#include <fstream>
 #include <iostream>
 
 void inicializarVentana(vertice cabeza)
@@ -146,6 +149,22 @@ void inicializarVentana(vertice cabeza)
                 if (rueda->wheel == sf::Mouse::Wheel::Vertical)
                 {
                     manejarZoomRaton(window, vista, rueda, zoomActual, textureSize);
+                }
+            }
+
+            // Detectar pulsaciones de teclado
+            else if (const auto* key = event->getIf<sf::Event::KeyPressed>()) 
+            {
+                // Guardar ruta: Tecla 'S'
+                if (key->code == sf::Keyboard::Key::S) 
+                {
+                    guardarRutaValida(estado);
+                }
+                
+                // Cargar ruta: Tecla 'L'
+                else if (key->code == sf::Keyboard::Key::L) 
+                {
+                    cargarRutaGuardada(estado, cabeza);
                 }
             }
         }
@@ -380,6 +399,73 @@ void manejarZoomRaton(sf::RenderWindow &window, sf::View &vista, const sf::Event
         // Aplicar la vista actualizada
         window.setView(vista);
     }
+}
+
+void guardarRutaValida(EstadoPathfinder &estado)
+{
+    if (estado.mostrarRuta && !estado.rutaDijkstra.empty()) 
+    {
+        std::cout << "[S] Guardando la ruta actual...\n";
+
+        // Crear un archivo temporal con los IDs de la ruta
+        std::ofstream archivoTemporal("../assets/ruta_temp.txt");
+        for (vertice v : estado.rutaDijkstra) archivoTemporal << v->id << ",";
+
+        archivoTemporal.close();
+
+        // Comprimir la ruta con Huffman
+        comprimirDatosMapa("../assets/ruta_temp.txt", "../assets/ruta_guardada.bin");
+
+        std::cout << "Ruta comprimida y guardada exitosamente\n";
+    }
+
+    else 
+    {
+        std::cout << "No hay ninguna ruta en pantalla para guardar\n";
+    }
+}
+
+void cargarRutaGuardada(EstadoPathfinder &estado, vertice cabeza)
+{
+    std::cout << "[L] Cargando ultima ruta guardada...\n";
+
+    // Descomprimir el binario
+    descomprimirDatosMapa("../assets/ruta_guardada.bin", "../assets/ruta_temp.txt");
+
+    // Leer los IDs y reconstruir el vector rutaDijkstra
+    std::ifstream archivoTemporal("../assets/ruta_temp.txt");
+    std::string linea;
+    if (std::getline(archivoTemporal, linea)) 
+    {
+        estado.rutaDijkstra.clear();
+        std::string id = "";
+
+        for (char c : linea)
+        {
+            if (c == ',')
+            {
+                if (!id.empty())
+                {
+                    int idBuscado = std::stoi(id);
+                    // Buscar el nodo en el grafo general y agregarlo a la ruta
+                    vertice nodoEncontrado = buscarVertice(cabeza, idBuscado);
+                    if (nodoEncontrado) estado.rutaDijkstra.push_back(nodoEncontrado);
+                    id = "";
+                }
+            }
+            
+            else id += c;
+        }
+
+        // Actualizar la interfaz para que SFML dibuje las líneas
+        if (!estado.rutaDijkstra.empty())
+        {
+            estado.origen = estado.rutaDijkstra.front();
+            estado.destino = estado.rutaDijkstra.back();
+            estado.mostrarRuta = true;
+        }
+    }
+    archivoTemporal.close();
 }
 
 void dibujarNodos(sf::RenderWindow &window, vertice cabeza)

@@ -22,5 +22,8 @@ void procesarSeleccionDeNodos(sf::RenderWindow &window, sf::Vector2f posicionMou
 vertice obtenerVerticePorClic(vertice cabeza, sf::Vector2f mousePosicion, float radio);
 void manejarZoomRaton(sf::RenderWindow &window, sf::View &vista, const sf::Event::MouseWheelScrolled *rueda, float &zoomActual, const sf::Vector2u &textureSize);
 
+void guardarRutaValida(EstadoPathfinder &estado);
+void cargarRutaGuardada(EstadoPathfinder &estado, vertice cabeza);
+
 void dibujarNodos(sf::RenderWindow &window, vertice cabeza);
 void dibujarRutaDijkstra(sf::RenderWindow &window, const std::vector<vertice> &ruta);
