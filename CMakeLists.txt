@@ -19,6 +19,7 @@ add_executable(${PROJECT_NAME} src/main.cpp
     src/dijkstra.cpp
     src/interfaz.cpp
     src/huffman.cpp
+    src/puntos_interes.cpp
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)

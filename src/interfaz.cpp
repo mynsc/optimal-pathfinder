@@ -3,6 +3,7 @@
 #include "dijkstra.hpp"
 #include "grafo.hpp"
 #include "huffman.hpp"
+#include "puntos_interes.hpp"
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
@@ -46,13 +47,28 @@ void inicializarVentana(vertice cabeza)
         )
     ));
 
+    // Convertir escala a la escala real de SFML
+    float zoomActual = 5.f;
+    float escalaVisual = zoomActual / 5.f;
+    vista.setSize(sf::Vector2f(windowSize.x * escalaVisual, windowSize.y * escalaVisual));
+
+    // Centrar la camara en medio del mapa al iniciar
+    vista.setCenter(sf::Vector2f(textureSize.x / 2.f, textureSize.y / 2.f));
+ 
     EstadoPathfinder estado;
+    nodoPuntoInteres puntosInteres = inicializarPuntosInteres();
+    nodoPuntoInteres puntoActual = puntosInteres;
 
     // Variables de control para la camara
     bool arrastrando = false;
     sf::Vector2f posicionInicioArrastre;
     sf::Vector2f centroInicio;
-    float zoomActual = 5.f;
+
+    // Variables para el carrusel
+    sf::Vector2f centroObjetivo = vista.getCenter();
+    float zoomObjetivo = zoomActual;
+    sf::Clock relojCine; 
+    float velocidadTransicion = 5.f;
 
     // Iniciar el bucle de la ventana
     while (window.isOpen())
@@ -140,6 +156,9 @@ void inicializarVentana(vertice cabeza)
 
                     // Actualizar la posición de inicio
                     posicionInicioArrastre = sf::Vector2f(posicionFisica);
+
+                    // Sincronizar el objetivo del Lerp con la nueva posición manual
+                    centroObjetivo = centro;
                 }
             }
 
@@ -149,6 +168,10 @@ void inicializarVentana(vertice cabeza)
                 if (rueda->wheel == sf::Mouse::Wheel::Vertical)
                 {
                     manejarZoomRaton(window, vista, rueda, zoomActual, textureSize);
+
+                    // Sincronizar el Lerp tras hacer zoom manual
+                    centroObjetivo = vista.getCenter();
+                    zoomObjetivo = zoomActual;
                 }
             }
 
@@ -166,9 +189,74 @@ void inicializarVentana(vertice cabeza)
                 {
                     cargarRutaGuardada(estado, cabeza);
                 }
+
+                // Navegar circularmente: Tecla 'Tab'
+                else if (key->code == sf::Keyboard::Key::Tab) 
+                {
+                    if (puntoActual != nullptr) 
+                    {
+                        // Avanzar al siguiente nodo de la lista circular
+                        puntoActual = puntoActual->siguiente;
+
+                        // Extraer los valores y asignarlos a las variables objetivo
+                        centroObjetivo = puntoActual->coordenadas;
+                        zoomObjetivo = puntoActual->zoomIdeal;
+                    }
+                }
             }
         }
-    
+
+        // Interpolacion
+        // Calcular el tiempo transcurrido desde el ultimo fotograma
+        float dt = relojCine.restart().asSeconds();
+
+        sf::Vector2f centroActual = vista.getCenter();
+        bool vistaCambiada = false;
+
+        // Calcular las diferencias absolutas
+        float diffX = centroObjetivo.x - centroActual.x;
+        float diffY = centroObjetivo.y - centroActual.y;
+        float diffZoom = zoomObjetivo - zoomActual;
+
+        // Lerp para la posicion
+        if (std::abs(diffX) > 0.5f || std::abs(diffY) > 0.5f) // Si la distancia es significativa
+        {
+            centroActual.x += diffX * velocidadTransicion * dt;
+            centroActual.y += diffY * velocidadTransicion * dt;
+            vista.setCenter(centroActual);
+            vistaCambiada = true;
+        }
+        else if (std::abs(diffX) > 0.0f || std::abs(diffY) > 0.0f) 
+        {
+            // Distancia insignificante: Forzar la posicion final exacta para evitar microtemblores
+            vista.setCenter(centroObjetivo);
+            vistaCambiada = true;
+        }
+
+        // Lerp para el Zoom
+        if (std::abs(diffZoom) > 0.005f) // Si la diferencia de zoom es significativa
+        {
+            zoomActual += diffZoom * velocidadTransicion * dt;
+            float escalaVisual = zoomActual / 5.f;
+            sf::Vector2f winSize(window.getSize());
+            vista.setSize({winSize.x * escalaVisual, winSize.y * escalaVisual});
+            vistaCambiada = true;
+        }
+        else if (std::abs(diffZoom) > 0.0f)
+        {
+            // Diferencia insignificante: Forzar el zoom final
+            zoomActual = zoomObjetivo;
+            float escalaVisual = zoomActual / 5.f;
+            sf::Vector2f winSize(window.getSize());
+            vista.setSize({winSize.x * escalaVisual, winSize.y * escalaVisual});
+            vistaCambiada = true;
+        }
+
+        // Aplicar a la camara solo si hubo movimiento
+        if (vistaCambiada) 
+        {
+            window.setView(vista);
+        }
 
         // Limpiar ventana
         window.clear();
@@ -386,13 +474,13 @@ void manejarZoomRaton(sf::RenderWindow &window, sf::View &vista, const sf::Event
         float minY = viewSize.y / 2.f;
         float maxY = static_cast<float>(textureSize.y) - minY;
 
-        // Forzar matematicamente a que el maximo nunca sea inferior al minimo
-        float seguroMaxX = std::max(minX, maxX);
-        float seguroMaxY = std::max(minY, maxY);
+        // Si la vista es mas grande, anclar al centro del mapa
+        // Si es más pequeña (Zoom 2.5f), aplicar el clamp normal para chocar con los bordes.
+        if (minX > maxX) centro.x = static_cast<float>(textureSize.x) / 2.f;
+        else centro.x = std::clamp(centro.x, minX, maxX);
 
-        // Como arriba garantizamos que la vista no es mayor que el mapa
-        centro.x = std::clamp(centro.x, minX, seguroMaxX);
-        centro.y = std::clamp(centro.y, minY, seguroMaxY);
+        if (minY > maxY) centro.y = static_cast<float>(textureSize.y) / 2.f;
+        else centro.y = std::clamp(centro.y, minY, maxY);
 
         vista.setCenter(centro);
         
