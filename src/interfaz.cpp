@@ -12,10 +12,10 @@
 void inicializarVentana(vertice cabeza)
 {
     // Crear la ventana principal
-    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Optimal PathFinder - UNMSM");
+    sf::RenderWindow window(sf::VideoMode({720, 720}), "Optimal PathFinder - UNMSM", sf::Style::Close);
     
-    // Evitar encoger la ventana menos de 500 x 500
-    window.setMinimumSize(sf::Vector2u({500, 500}));
+    // Evitar encoger la ventana menos de 720 x 720
+    window.setMinimumSize(sf::Vector2u({720, 720}));
 
     // Cargar la imagen del icono
     sf::Image icono;
@@ -60,19 +60,6 @@ void inicializarVentana(vertice cabeza)
             // Cerrar ventana: Salir
             if (event->is<sf::Event::Closed>())
                 window.close();
-
-            // Detectar evento de maximizar ventana
-            if (const auto* resized = event->getIf<sf::Event::Resized>())
-            {
-                // Calcular las nuevas dimensiones
-                sf::Vector2f newWindowSize(resized->size);
-
-                // Mantener el nivel de zoom actual proporcional a la nueva ventana
-                vista.setSize({newWindowSize.x * zoomActual / 5.f, newWindowSize.y * zoomActual / 5.f});
-
-                // Asignar nuevas dimensiones a la ventana
-                window.setView(vista);
-            }
 
             // Detectar cuando se presiona un boton del raton
             if (const auto* click = event->getIf<sf::Event::MouseButtonPressed>())
